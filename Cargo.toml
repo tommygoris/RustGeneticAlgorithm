@@ -1,0 +1,7 @@
+[package]
+name = "GeneticAlgorithm"
+version = "0.1.0"
+authors = ["Tommy Goris <goristommyucf@knights.ucf.edu>"]
+edition = "2018"
+
+[dependencies]
