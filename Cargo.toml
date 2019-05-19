@@ -1,7 +1,10 @@
 [package]
-name = "GeneticAlgorithm"
+name = "genetic_algorithm"
 version = "0.1.0"
 authors = ["Tommy Goris <goristommyucf@knights.ucf.edu>"]
 edition = "2018"
 
 [dependencies]
+azul = { git = "https://github.com/maps4print/azul" }
+gnuplot = "0.0.31"
+rand = "0.6.5"
