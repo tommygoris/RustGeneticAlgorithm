@@ -1,6 +1,7 @@
 extern crate azul;
 mod crossover;
 mod genome;
+mod mutation;
 
 use azul::{prelude::*, widgets::{label::Label, button::Button}};
 
