@@ -17,12 +17,9 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="d0e4b9de-360d-4ed3-b9b5-6a85db33ab7a" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/src/mutation/genome_mutation.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/mutation/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/crossover/genome_crossover.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/crossover/genome_crossover.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/src/genome/population.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/genome/population.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/main.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/mutation/genome_mutation.rs" beforeDir="false" afterPath="$PROJECT_DIR$/src/mutation/genome_mutation.rs" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -44,11 +41,11 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="false">
+      <file pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/src/mutation/genome_mutation.rs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="17">
-              <caret line="1" column="41" selection-start-line="1" selection-start-column="41" selection-end-line="1" selection-end-column="41" />
+            <state relative-caret-position="357">
+              <caret line="21" column="34" selection-start-line="21" selection-start-column="34" selection-end-line="21" selection-end-column="34" />
             </state>
           </provider>
         </entry>
@@ -56,8 +53,8 @@
       <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/crossover/genome_crossover.rs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="85">
-              <caret line="5" column="26" lean-forward="true" selection-start-line="5" selection-start-column="26" selection-end-line="5" selection-end-column="26" />
+            <state relative-caret-position="438">
+              <caret line="197" column="8" selection-start-line="197" selection-start-column="8" selection-end-line="197" selection-end-column="60" />
             </state>
           </provider>
         </entry>
@@ -71,19 +68,43 @@
           </provider>
         </entry>
       </file>
-      <file pinned="false" current-in-tab="true">
+      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/genome/population.rs">
           <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="190">
-              <caret line="92" column="36" selection-start-line="92" selection-start-column="36" selection-end-line="92" selection-end-column="36" />
+            <state relative-caret-position="-612">
+              <caret line="24" lean-forward="true" selection-start-line="24" selection-end-line="24" />
               <folding>
                 <element signature="e#382#383#0" expanded="true" />
                 <element signature="e#413#414#0" expanded="true" />
                 <element signature="e#450#451#0" expanded="true" />
                 <element signature="e#478#479#0" expanded="true" />
-                <element signature="e#1169#1170#0" expanded="true" />
-                <element signature="e#1189#1190#0" expanded="true" />
+                <element signature="e#2280#2281#0" expanded="true" />
+                <element signature="e#2320#2321#0" expanded="true" />
               </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$USER_HOME$/.rustup/toolchains/nightly-x86_64-pc-windows-msvc/lib/rustlib/src/rust/src/libcore/iter/traits/iterator.rs">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="198">
+              <caret line="981" column="7" selection-start-line="981" selection-start-column="7" selection-end-line="981" selection-end-column="7" />
+              <folding>
+                <element signature="e#34341#34342#0" expanded="true" />
+                <element signature="e#34374#34375#0" expanded="true" />
+                <element signature="e#58#59#0" expanded="true" />
+                <element signature="e#82#83#0" expanded="true" />
+              </folding>
+            </state>
+          </provider>
+        </entry>
+      </file>
+      <file pinned="false" current-in-tab="false">
+        <entry file="file://$USER_HOME$/.rustup/toolchains/nightly-x86_64-pc-windows-msvc/lib/rustlib/src/rust/src/libcore/slice/mod.rs">
+          <provider selected="true" editor-type-id="text-editor">
+            <state relative-caret-position="198">
+              <caret line="528" column="11" selection-start-line="528" selection-start-column="11" selection-end-line="528" selection-end-column="11" />
             </state>
           </provider>
         </entry>
@@ -107,32 +128,10 @@
         </entry>
       </file>
       <file pinned="false" current-in-tab="false">
-        <entry file="file://$PROJECT_DIR$/src/genome/mod.rs">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="17">
-              <caret line="1" column="8" selection-start-line="1" selection-start-column="8" selection-end-line="1" selection-end-column="8" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/src/crossover/mod.rs">
           <provider selected="true" editor-type-id="text-editor">
             <state relative-caret-position="17">
               <caret line="1" selection-start-line="1" selection-end-line="1" selection-end-column="25" />
-            </state>
-          </provider>
-        </entry>
-      </file>
-      <file pinned="false" current-in-tab="false">
-        <entry file="file://$USER_HOME$/.rustup/toolchains/nightly-x86_64-pc-windows-msvc/lib/rustlib/src/rust/src/liballoc/vec.rs">
-          <provider selected="true" editor-type-id="text-editor">
-            <state relative-caret-position="351">
-              <caret line="1191" column="11" selection-start-line="1191" selection-start-column="11" selection-end-line="1191" selection-end-column="11" />
-              <folding>
-                <element signature="e#40395#40396#0" expanded="true" />
-                <element signature="e#40418#40419#0" expanded="true" />
-              </folding>
             </state>
           </provider>
         </entry>
@@ -167,9 +166,9 @@
         <option value="$PROJECT_DIR$/src/crossover/mutation/genome_mutation.rs" />
         <option value="$PROJECT_DIR$/src/mutation/mod.rs" />
         <option value="$PROJECT_DIR$/src/main.rs" />
+        <option value="$PROJECT_DIR$/src/genome/population.rs" />
         <option value="$PROJECT_DIR$/src/crossover/genome_crossover.rs" />
         <option value="$PROJECT_DIR$/src/mutation/genome_mutation.rs" />
-        <option value="$PROJECT_DIR$/src/genome/population.rs" />
       </list>
     </option>
   </component>
@@ -311,7 +310,7 @@
       <workItem from="1558098156297" duration="12119000" />
       <workItem from="1558143364186" duration="1974000" />
       <workItem from="1558182699856" duration="18043000" />
-      <workItem from="1558275417476" duration="14268000" />
+      <workItem from="1558275417476" duration="20680000" />
     </task>
     <servers />
   </component>
@@ -342,7 +341,7 @@
     </history-entry>
   </component>
   <component name="TimeTrackingManager">
-    <option name="totallyTimeSpent" value="62916000" />
+    <option name="totallyTimeSpent" value="69328000" />
   </component>
   <component name="TodoView">
     <todo-panel id="selected-file">
@@ -398,17 +397,6 @@
       <provider selected="true" editor-type-id="text-editor">
         <state relative-caret-position="153">
           <caret line="9" column="14" selection-start-line="9" selection-start-column="14" selection-end-line="9" selection-end-column="14" />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$USER_HOME$/.rustup/toolchains/nightly-x86_64-pc-windows-msvc/lib/rustlib/src/rust/src/libcore/iter/traits/iterator.rs">
-      <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="198">
-          <caret line="1463" column="7" selection-start-line="1463" selection-start-column="7" selection-end-line="1463" selection-end-column="7" />
-          <folding>
-            <element signature="e#58#59#0" expanded="true" />
-            <element signature="e#82#83#0" expanded="true" />
-          </folding>
         </state>
       </provider>
     </entry>
@@ -490,32 +478,52 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/crossover/genome_crossover.rs">
+    <entry file="file://$USER_HOME$/.rustup/toolchains/nightly-x86_64-pc-windows-msvc/lib/rustlib/src/rust/src/libcore/slice/mod.rs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="85">
-          <caret line="5" column="26" lean-forward="true" selection-start-line="5" selection-start-column="26" selection-end-line="5" selection-end-column="26" />
+        <state relative-caret-position="198">
+          <caret line="528" column="11" selection-start-line="528" selection-start-column="11" selection-end-line="528" selection-end-column="11" />
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/src/mutation/genome_mutation.rs">
+    <entry file="file://$USER_HOME$/.rustup/toolchains/nightly-x86_64-pc-windows-msvc/lib/rustlib/src/rust/src/libcore/iter/traits/iterator.rs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="17">
-          <caret line="1" column="41" selection-start-line="1" selection-start-column="41" selection-end-line="1" selection-end-column="41" />
+        <state relative-caret-position="198">
+          <caret line="981" column="7" selection-start-line="981" selection-start-column="7" selection-end-line="981" selection-end-column="7" />
+          <folding>
+            <element signature="e#34341#34342#0" expanded="true" />
+            <element signature="e#34374#34375#0" expanded="true" />
+            <element signature="e#58#59#0" expanded="true" />
+            <element signature="e#82#83#0" expanded="true" />
+          </folding>
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/src/genome/population.rs">
       <provider selected="true" editor-type-id="text-editor">
-        <state relative-caret-position="190">
-          <caret line="92" column="36" selection-start-line="92" selection-start-column="36" selection-end-line="92" selection-end-column="36" />
+        <state relative-caret-position="-612">
+          <caret line="24" lean-forward="true" selection-start-line="24" selection-end-line="24" />
           <folding>
             <element signature="e#382#383#0" expanded="true" />
             <element signature="e#413#414#0" expanded="true" />
             <element signature="e#450#451#0" expanded="true" />
             <element signature="e#478#479#0" expanded="true" />
-            <element signature="e#1169#1170#0" expanded="true" />
-            <element signature="e#1189#1190#0" expanded="true" />
+            <element signature="e#2280#2281#0" expanded="true" />
+            <element signature="e#2320#2321#0" expanded="true" />
           </folding>
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/crossover/genome_crossover.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="438">
+          <caret line="197" column="8" selection-start-line="197" selection-start-column="8" selection-end-line="197" selection-end-column="60" />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/src/mutation/genome_mutation.rs">
+      <provider selected="true" editor-type-id="text-editor">
+        <state relative-caret-position="357">
+          <caret line="21" column="34" selection-start-line="21" selection-start-column="34" selection-end-line="21" selection-end-column="34" />
         </state>
       </provider>
     </entry>

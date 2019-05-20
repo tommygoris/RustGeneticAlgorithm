@@ -184,7 +184,7 @@ mod crossover_test {
         let individual2 = Individual::new(String::from("01010101010101"), 5.0);
         let individual = string_crossover.crossover(individual, individual2);
         assert_eq!(individual.individual(), &String::from("11111111111111"));
-        println!("{}", individual);
+        //println!("{}", individual);
     }
 
     #[test]
