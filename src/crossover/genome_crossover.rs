@@ -175,7 +175,7 @@ mod crossover_test {
 
         let individual = Individual::new(String::from("uno"), 5.0);
         let individual2 = Individual::new(String::from("dos"), 5.0);
-        let mut string_crossover = StringCrossover::new(0.60, 2, *seed);
+        let mut string_crossover = StringCrossover::new(1.0, 2, *seed);
         let individual = string_crossover.crossover(individual, individual2);
         assert_eq!(individual.individual(), &String::from("uoo"));
 
@@ -184,6 +184,25 @@ mod crossover_test {
         let individual2 = Individual::new(String::from("01010101010101"), 5.0);
         let individual = string_crossover.crossover(individual, individual2);
         assert_eq!(individual.individual(), &String::from("11111111111111"));
+        //println!("{}", individual);
+    }
+
+    #[test]
+    fn test_string_crossover_skip_crossover() {
+
+        let seed: &[u8; 32] = &[1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 3 ,1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4];
+
+        let individual = Individual::new(String::from("uno"), 5.0);
+        let individual2 = Individual::new(String::from("dos"), 5.0);
+        let mut string_crossover = StringCrossover::new(0.0, 2, *seed);
+        let individual = string_crossover.crossover(individual, individual2);
+        assert_eq!(individual.individual(), &String::from("dos"));
+
+        let mut string_crossover = StringCrossover::new(0.0, 13, *seed);
+        let individual = Individual::new(String::from("10101010101010"), 5.0);
+        let individual2 = Individual::new(String::from("01010101010101"), 5.0);
+        let individual = string_crossover.crossover(individual, individual2);
+        assert_eq!(individual.individual(), &String::from("01010101010101"));
         //println!("{}", individual);
     }
 

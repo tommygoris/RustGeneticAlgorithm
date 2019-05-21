@@ -5,12 +5,18 @@ use rand::rngs::StdRng;
 
 pub trait Mutate {
     type T;
-    fn mutate(&mut self, mut population: &Population<Self::T>) -> Population<String>;
+    fn mutate(&mut self, mut population: &Population<Self::T>) -> Population<Self::T>;
 }
 
 pub struct StringMutation {
     mutation_rate: f64,
     possible_candidates: Vec<char>,
+    seed: StdRng
+}
+
+pub struct VecIntegerMutation {
+    mutation_rate: f64,
+    possible_candidates: Vec<u32>,
     seed: StdRng
 }
 
@@ -49,9 +55,47 @@ impl StringMutation {
     }
 }
 
+impl Mutate for VecIntegerMutation {
+    type T = Vec<u32>;
+
+    fn mutate(&mut self, population: &Population<Vec<u32>>) -> Population<Vec<u32>> {
+        let mut new_population: Vec<Individual<Vec<u32>>> = Vec::new();
+        for individual in population.list_of_individuals().iter() {
+            let mut mutated_individual = Vec::new();
+            for int_item in individual.individual().iter() {
+                let gen_number = self.seed.gen::<f64>();
+                if gen_number < self.mutation_rate {
+                    let location = self.seed.gen_range(0, self.possible_candidates.len());
+
+                    mutated_individual.push(self.possible_candidates[location]);
+                } else {
+                    mutated_individual.push(*int_item);
+                }
+            }
+
+            new_population.push(Individual::new(mutated_individual, 6.0));
+        }
+        let new_pop = Population::new(new_population, population.problem_type());
+        new_pop
+    }
+}
+
+impl VecIntegerMutation {
+    fn new(mutation_rate: f64, possible_candidates: Vec<u32>, seed: [u8; 32]) -> VecIntegerMutation {
+        VecIntegerMutation {
+            mutation_rate,
+            possible_candidates,
+            seed: SeedableRng::from_seed(seed),
+        }
+    }
+}
+
+
+
+
 #[cfg(test)]
 mod mutation_test {
-    use crate::mutation::genome_mutation::{StringMutation, Mutate};
+    use crate::mutation::genome_mutation::{StringMutation, Mutate, VecIntegerMutation};
     use crate::genome::population::{Population, Individual, ProblemType};
 
     #[test]
@@ -71,5 +115,25 @@ mod mutation_test {
         let new_pop = string_mutation.mutate(&population);
         assert_eq!(new_pop.list_of_individuals()[0].individual(), &String::from("1110000"));
         assert_eq!(new_pop.list_of_individuals()[1].individual(), &String::from("11101110101"));
+    }
+
+    #[test]
+    fn test_vec_int_mutation() {
+        let seed: &[u8; 32] = &[1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 3 ,1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4];
+        let possible_candidates = vec![2,3];
+
+        let mut vec_int_mutation = VecIntegerMutation::new(1.0, possible_candidates, *seed);
+
+
+        let individual = Individual::new(vec![0,0,0,0,0], 5.0);
+        let individual2 = Individual::new(vec![1,1,1,1,1], 5.0);
+
+        let list_of_individuals = vec![individual, individual2];
+
+        let mut population = Population::new(list_of_individuals, ProblemType::Max);
+        let new_pop = vec_int_mutation.mutate(&population);
+
+        assert_eq!(new_pop.list_of_individuals()[0].individual(), &vec![3,3,3,2,2]);
+        assert_eq!(new_pop.list_of_individuals()[1].individual(), &vec![2,2,3,3,3]);
     }
 }

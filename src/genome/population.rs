@@ -1,5 +1,7 @@
 use crate::genome::population::ProblemType::Max;
 use crate::genome::population::ProblemType::Min;
+use crate::crossover::genome_crossover::Crossover;
+use crate::crossover::
 
 #[derive(Copy, Clone, Debug, Default)]
 pub struct Individual<T> {
@@ -62,11 +64,17 @@ impl <T> Population<T> {
     }
 
 
-    pub fn crossover(self: &Self) {}
+    pub fn crossover(self: &Self, crossover: &Crossover) {
 
-    pub fn mutate(self: &Self) {}
+    }
 
-    fn select_individual(self: &Self) {}
+    pub fn mutate(self: &Self, mutation: &Mutation) {
+
+    }
+
+    fn select_individual(self: &Self) {
+
+    }
 
     pub fn list_of_individuals(&self) -> &Vec<Individual<T>> { &self.list_of_individuals }
 
