@@ -1,19 +1,22 @@
 extern crate rand;
-use crate::genome::population::{Population, Individual, ProblemType};
+use crate::genome::population::{Population, Individual};
 use rand::prelude::*;
 use rand::rngs::StdRng;
+use crate::genome::problem::FitnessFunction;
 
 pub trait Mutate {
     type T;
-    fn mutate(&mut self, mut population: &Population<Self::T>) -> Population<Self::T>;
+    fn mutate(&mut self, population: &Population<Self::T>, mut fitness_function: Box<dyn FitnessFunction<T = Self::T>>) -> Vec<Individual<Self::T>>;
 }
 
+#[derive(Clone, Debug)]
 pub struct StringMutation {
     mutation_rate: f64,
     possible_candidates: Vec<char>,
     seed: StdRng
 }
 
+#[derive(Clone, Debug)]
 pub struct VecIntegerMutation {
     mutation_rate: f64,
     possible_candidates: Vec<u32>,
@@ -23,7 +26,7 @@ pub struct VecIntegerMutation {
 impl Mutate for StringMutation {
     type T = String;
 
-    fn mutate(&mut self, population: &Population<String>) -> Population<String> {
+    fn mutate(&mut self, population: &Population<String>, mut fitness_function: Box<dyn FitnessFunction<T = String>>) -> Vec<Individual<String>> {
         let mut new_population: Vec<Individual<String>> = Vec::new();
         for individual in population.list_of_individuals().iter() {
             let mut mutated_individual = String::new();
@@ -37,16 +40,15 @@ impl Mutate for StringMutation {
                     mutated_individual.push(string_individual_char);
                 }
             }
-
-            new_population.push(Individual::new(mutated_individual, 6.0));
+            let new_fitness = fitness_function.calculate_fitness(&mutated_individual);
+            new_population.push(Individual::new(mutated_individual, new_fitness));
         }
-        let new_pop = Population::new(new_population, population.problem_type());
-        new_pop
+        new_population
     }
 }
 
 impl StringMutation {
-    fn new(mutation_rate: f64, possible_candidates: Vec<char>, seed: [u8; 32]) -> StringMutation {
+    pub fn new(mutation_rate: f64, possible_candidates: Vec<char>, seed: [u8; 32]) -> StringMutation {
         StringMutation {
             mutation_rate,
             possible_candidates,
@@ -58,7 +60,7 @@ impl StringMutation {
 impl Mutate for VecIntegerMutation {
     type T = Vec<u32>;
 
-    fn mutate(&mut self, population: &Population<Vec<u32>>) -> Population<Vec<u32>> {
+    fn mutate(&mut self, population: &Population<Vec<u32>>, mut fitness_function: Box<dyn FitnessFunction<T = Vec<u32>>>) -> Vec<Individual<Vec<u32>>>  {
         let mut new_population: Vec<Individual<Vec<u32>>> = Vec::new();
         for individual in population.list_of_individuals().iter() {
             let mut mutated_individual = Vec::new();
@@ -73,10 +75,10 @@ impl Mutate for VecIntegerMutation {
                 }
             }
 
-            new_population.push(Individual::new(mutated_individual, 6.0));
+            let new_fitness = fitness_function.calculate_fitness(&mutated_individual);
+            new_population.push(Individual::new(mutated_individual, new_fitness));
         }
-        let new_pop = Population::new(new_population, population.problem_type());
-        new_pop
+        new_population
     }
 }
 
@@ -113,8 +115,8 @@ mod mutation_test {
 
         let mut population = Population::new(list_of_individuals, ProblemType::Max);
         let new_pop = string_mutation.mutate(&population);
-        assert_eq!(new_pop.list_of_individuals()[0].individual(), &String::from("1110000"));
-        assert_eq!(new_pop.list_of_individuals()[1].individual(), &String::from("11101110101"));
+        assert_eq!(new_pop[0].individual(), &String::from("1110000"));
+        assert_eq!(new_pop[1].individual(), &String::from("11101110101"));
     }
 
     #[test]
@@ -133,7 +135,7 @@ mod mutation_test {
         let mut population = Population::new(list_of_individuals, ProblemType::Max);
         let new_pop = vec_int_mutation.mutate(&population);
 
-        assert_eq!(new_pop.list_of_individuals()[0].individual(), &vec![3,3,3,2,2]);
-        assert_eq!(new_pop.list_of_individuals()[1].individual(), &vec![2,2,3,3,3]);
+        assert_eq!(new_pop[0].individual(), &vec![3,3,3,2,2]);
+        assert_eq!(new_pop[1].individual(), &vec![2,2,3,3,3]);
     }
 }

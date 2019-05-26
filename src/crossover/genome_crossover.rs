@@ -6,19 +6,25 @@ use rand::rngs::StdRng;
 use std::string::ToString;
 use std::collections::HashSet;
 use std::convert::TryFrom;
+use crate::genome::problem::FitnessFunction;
 
 pub trait Crossover {
     type T;
 
-    fn crossover(&mut self, first_individual: Individual<Self::T>, second_individual: Individual<Self::T>) -> Individual<Self::T>;
+    fn crossover(&mut self,
+                 first_individual: &Individual<Self::T>,
+                 second_individual: &Individual<Self::T>,
+                 fitness_function: &mut Box<dyn FitnessFunction<T = Self::T>>)
+        -> Individual<Self::T>;
 }
 
-
+#[derive(Clone, Debug)]
 pub struct StringCrossover {
     crossover_rate: f64,
     crossover_points: u32,
     seed: StdRng
 }
+#[derive(Clone, Debug)]
 pub struct VecIntegerCrossover {
     crossover_rate: f64,
     crossover_points: u32,
@@ -28,8 +34,7 @@ pub struct VecIntegerCrossover {
 impl Crossover for StringCrossover{
     type T = String;
 
-    fn crossover(&mut self, _first_individual: Individual<String>, _second_individual: Individual<String>) -> Individual<String> {
-        let mut new_individual: Individual<String> = Individual::default();
+    fn crossover(&mut self, _first_individual: &Individual<String>, _second_individual: &Individual<String>, fitness_function: &mut Box<dyn FitnessFunction<T = String>>) -> Individual<String> {
         let gen_number = self.seed.gen::<f64>();
 
         if gen_number < self.crossover_rate {
@@ -60,23 +65,24 @@ impl Crossover for StringCrossover{
                 previous = location;
 
             }
-            new_individual = Individual::new(new_string_individual, 6.0);
+            let new_fitness = fitness_function.calculate_fitness(&new_string_individual);
+            let new_individual = Individual::new(new_string_individual, new_fitness);
             return new_individual
         }
 
         let new_individual: Individual<String> =
             if _first_individual.fitness() > _second_individual.fitness() {
-                _first_individual
+                _first_individual.clone()
             }
             else {
-                _second_individual
+                _second_individual.clone()
             };
         new_individual
     }
 }
 
 impl StringCrossover {
-    fn new(crossover_rate: f64, crossover_points: u32, seed: [u8; 32]) -> StringCrossover {
+    pub fn new(crossover_rate: f64, crossover_points: u32, seed: [u8; 32]) -> StringCrossover {
         StringCrossover {
             crossover_rate,
             crossover_points,
@@ -88,8 +94,7 @@ impl StringCrossover {
 impl Crossover for VecIntegerCrossover {
     type T = Vec<u32>;
 
-    fn crossover(&mut self, _first_individual: Individual<Vec<u32>>, _second_individual: Individual<Vec<u32>>) -> Individual<Vec<u32>> {
-        let mut new_individual: Individual<Vec<u32>> = Individual::default();
+    fn crossover(&mut self, _first_individual: &Individual<Vec<u32>>, _second_individual: &Individual<Vec<u32>>, fitness_function: &mut Box<dyn FitnessFunction<T = Vec<u32>>>) -> Individual<Vec<u32>> {
         let gen_number = self.seed.gen::<f64>();
 
         if gen_number < self.crossover_rate {
@@ -119,15 +124,16 @@ impl Crossover for VecIntegerCrossover {
 
 
             }
-            new_individual = Individual::new(new_vec_individual, 6.0);
+            let new_fitness = fitness_function.calculate_fitness(&new_vec_individual);
+            let new_individual = Individual::new(new_vec_individual, new_fitness);
             return new_individual
         }
         let new_individual: Individual<Vec<u32>> =
             if _first_individual.fitness() > _second_individual.fitness() {
-                _first_individual
+                _first_individual.clone()
             }
             else {
-                _second_individual
+                _second_individual.clone()
             };
         new_individual
     }
@@ -149,7 +155,7 @@ fn get_crossover_locations(length_of_problem: &usize, crossover_points: u32, mut
     let mut point_locations  = Vec::new();
     let mut set_locations = HashSet::new() as HashSet<u32>;
     while set_locations.len() < usize::try_from(crossover_points).unwrap() {
-        let location: u32  = seed.gen_range(1, length_of_problem) as u32;
+        let location  = seed.gen_range(1, length_of_problem) as u32;
         if !set_locations.contains(&location) {
             set_locations.insert(location);
             point_locations.push(location)
@@ -176,13 +182,13 @@ mod crossover_test {
         let individual = Individual::new(String::from("uno"), 5.0);
         let individual2 = Individual::new(String::from("dos"), 5.0);
         let mut string_crossover = StringCrossover::new(1.0, 2, *seed);
-        let individual = string_crossover.crossover(individual, individual2);
+        let individual = string_crossover.crossover(&individual, &individual2);
         assert_eq!(individual.individual(), &String::from("uoo"));
 
         let mut string_crossover = StringCrossover::new(1.0, 13, *seed);
         let individual = Individual::new(String::from("10101010101010"), 5.0);
         let individual2 = Individual::new(String::from("01010101010101"), 5.0);
-        let individual = string_crossover.crossover(individual, individual2);
+        let individual = string_crossover.crossover(&individual, &individual2);
         assert_eq!(individual.individual(), &String::from("11111111111111"));
         //println!("{}", individual);
     }
@@ -195,13 +201,13 @@ mod crossover_test {
         let individual = Individual::new(String::from("uno"), 5.0);
         let individual2 = Individual::new(String::from("dos"), 5.0);
         let mut string_crossover = StringCrossover::new(0.0, 2, *seed);
-        let individual = string_crossover.crossover(individual, individual2);
+        let individual = string_crossover.crossover(&individual, &individual2);
         assert_eq!(individual.individual(), &String::from("dos"));
 
         let mut string_crossover = StringCrossover::new(0.0, 13, *seed);
         let individual = Individual::new(String::from("10101010101010"), 5.0);
         let individual2 = Individual::new(String::from("01010101010101"), 5.0);
-        let individual = string_crossover.crossover(individual, individual2);
+        let individual = string_crossover.crossover(&individual, &individual2);
         assert_eq!(individual.individual(), &String::from("01010101010101"));
         //println!("{}", individual);
     }
@@ -213,7 +219,7 @@ mod crossover_test {
         let mut vec_crossover = VecIntegerCrossover::new(1.0, 2, *seed);
         let individual = Individual::new(vec![1, 2, 3], 5.0);
         let individual2 = Individual::new(vec![4, 5, 6], 5.0);
-        let individual = vec_crossover.crossover(individual, individual2);
+        let individual = vec_crossover.crossover(&individual, &individual2);
         assert_eq!(individual.individual(), &vec![1, 5, 3]);
     }
 }

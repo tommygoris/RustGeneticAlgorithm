@@ -1,7 +1,7 @@
-use crate::genome::population::ProblemType::Max;
-use crate::genome::population::ProblemType::Min;
 use crate::crossover::genome_crossover::Crossover;
-use crate::crossover::
+use crate::mutation::genome_mutation::Mutate;
+use crate::selection::genome_selection::SelectIndividual;
+use crate::genome::problem::FitnessFunction;
 
 #[derive(Copy, Clone, Debug, Default)]
 pub struct Individual<T> {
@@ -10,7 +10,7 @@ pub struct Individual<T> {
 }
 
 #[derive(Clone, Debug)]
-pub struct Population<T> {
+pub struct Population<T>{
     list_of_individuals: Vec<Individual<T>>,
     problem_type: ProblemType,
 }
@@ -59,34 +59,37 @@ impl <T> Population<T> {
     pub fn new(list_of_individuals: Vec<Individual<T>>, problem_type: ProblemType) -> Population<T> {
         Population {
             list_of_individuals,
-            problem_type
+            problem_type,
         }
     }
 
 
-    pub fn crossover(self: &Self, crossover: &Crossover) {
+    pub fn crossover(&mut self, crossover: &mut Crossover<T=T>, selector: &mut SelectIndividual<T=T>, mut fitness_function: Box<dyn FitnessFunction<T = T>>) {
+        let mut new_population: Vec<Individual<T>> = Vec::new();
+        for _ in self.list_of_individuals.iter() {
+            let individual_one = selector.select_individual(self);
+            let individual_two = selector.select_individual(self);
+            let new_individual = crossover.crossover(&individual_one, &individual_two, &mut fitness_function);
 
+            new_population.push(new_individual);
+        }
+        self.list_of_individuals = new_population;
     }
 
-    pub fn mutate(self: &Self, mutation: &Mutation) {
-
+    pub fn mutate<'a>(&mut self, mutation: &'a mut dyn Mutate<T = T>, fitness_function: Box<dyn FitnessFunction<T = T>>) {
+        self.list_of_individuals = mutation.mutate(self, fitness_function);
     }
-
-    fn select_individual(self: &Self) {
-
-    }
-
     pub fn list_of_individuals(&self) -> &Vec<Individual<T>> { &self.list_of_individuals }
 
     pub fn find_top_individual(&mut self) -> &Individual<T> {
         let mut top_individual = &self.list_of_individuals()[0];
-        for (index, individual) in self.list_of_individuals().iter().skip(1).enumerate() {
+        for (_, individual) in self.list_of_individuals().iter().skip(1).enumerate() {
             match self.problem_type {
-                Min =>
+                ProblemType::Min =>
                     if top_individual.fitness > individual.fitness {
                         top_individual = individual;
                     }
-                Max =>
+                ProblemType::Max =>
                     if top_individual.fitness < individual.fitness {
                         top_individual = individual;
                 }
