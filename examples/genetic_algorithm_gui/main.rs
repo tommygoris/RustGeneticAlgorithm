@@ -1,23 +1,21 @@
 extern crate azul;
-mod crossover;
-mod genome;
-mod mutation;
-mod selection;
+
 
 use azul::{prelude::*, widgets::{label::Label, button::Button}};
-use crate::selection::genome_selection::{TournamentSelection};
-use crate::crossover::genome_crossover::{StringCrossover};
-use crate::mutation::genome_mutation::StringMutation;
-use crate::genome::population::{Individual, Population, ProblemType};
+use genetic_algorithm::selection::genome_selection::{TournamentSelection};
+use genetic_algorithm::crossover::genome_crossover::{StringCrossover};
+use genetic_algorithm::mutation::genome_mutation::StringMutation;
+use genetic_algorithm::genome::population::{Individual, Population, ProblemType};
 use rand::Rng;
 use rand::prelude::*;
-use crate::genome::problem::{OneMax, FitnessFunction};
+use genetic_algorithm::genome::problem::{OneMax, FitnessFunction};
 use azul::widgets::text_input::{TextInput, TextInputState};
-use azul::dom::NodeType::Text;
+use azul::dom::NodeType::{Text, Image};
 #[cfg(debug_assertions)]
 use std::time::Duration;
 use std::path::PathBuf;
 use azul::window::FakeWindow;
+use plotters::prelude::*;
 
 macro_rules! css_path {() => { concat!(env!("CARGO_MANIFEST_DIR"), "/src/app.css")};}
 //macro_rules! FONT_PATH {() => { concat!(env!("CARGO_MANIFEST_DIR"), "/../assets/fonts/KoHo-Light.ttf")};}
@@ -32,7 +30,9 @@ struct DataModel {
 
 impl Layout for DataModel {
     fn layout(&self, mut _info: LayoutInfo<Self>) -> Dom<Self> {
-
+//        let image_id = _info.resources.add_css_image_id("output");
+//        #[cfg(feature = "image_loading")]
+//        _info.resources.add_image(image_id, ImageSource::File(PathBuf::from("output.png")));
         fn add_population_text_box(window: &mut FakeWindow<DataModel>, text_input: &TextInputState, data_model: &DataModel, label_text: String) -> Dom<DataModel> {
 
             let text_input = TextInput::new()
@@ -50,6 +50,12 @@ impl Layout for DataModel {
             Dom::div()
                 .with_child(label_div)
         }
+
+//        fn add_chart_image() -> Dom<DataModel> {
+//            //Dom:div()
+//                //.with_class("image_div")
+//                //.with_child(Image())
+//        }
         //add_population_text_box(_info, &self.text_input, &self)
         Dom::div()
             .with_class("orange")
@@ -58,6 +64,7 @@ impl Layout for DataModel {
             .with_child(add_population_text_box(_info.window, &self.text_input, &self, String::from("Mutation Rate:")))
             .with_child(add_population_text_box(_info.window, &self.text_input, &self, String::from("Selection Rate:")))
             .with_child(add_population_text_box(_info.window, &self.text_input, &self, String::from("Solution Fitness:")))
+            .with_child(Dom::image(*_info.resources.get_css_image_id("output.png").unwrap()))
             //.with_child(TextInput::new().dom(&self.text_input))
             //.with_child(Dom::label(String::from("hello2")))
             //.with_child(Dom::label(String::from("hello3")))
@@ -69,10 +76,16 @@ impl Layout for DataModel {
 }
 
 fn main() {
+    create_chart();
     let mut file_path = PathBuf::new();
     file_path.push("C:\\Users\\goris\\CLionProjects\\genetic_algorithm\\src\\app.css");
     let mut css = css::hot_reload_override_native(file_path, Duration::from_millis(100));
     let mut app = App::new(DataModel { counter: 0, text_input: TextInputState::default() }, AppConfig::default()).unwrap();
+
+    let image_id = app.app_state.resources.add_css_image_id("output");
+
+    app.app_state.resources.add_image(image_id, ImageSource::File(PathBuf::from("output.png")));
+
     let window = app.create_hot_reload_window(WindowCreateOptions::default(), css).unwrap();
     app.run(window).unwrap();
     let x = 1;
@@ -112,7 +125,24 @@ fn main() {
 //    population.crossover(crossover, *selection, fitness_function);
 //    //population.mutate();
 //}
+fn create_chart() -> Result<(), Box<dyn std::error::Error>>{
+    let root = BitMapBackend::new("0.png", (640, 480)).into_drawing_area();
+    root.fill(&White)?;
+    let mut chart = ChartBuilder::on(&root)
+        .caption("y=x^2", &("Arial", 50).into_font())
+        .x_label_area_size(30)
+        .y_label_area_size(30)
+        .build_ranged(-1f32..1f32, -0.1f32..1f32)?;
 
+    chart.configure_mesh().draw()?;
+
+    chart.draw_series(LineSeries::new(
+        (-50..=50).map(|x| x as f32 / 50.0).map(|x| (x, x * x)),
+        &RGBColor(255, 0, 0),
+    ))?;
+    Ok(())
+
+}
 fn init_string_pop(seed: [u8; 32], one_max_problem: &mut OneMax) -> Population<String> {
     let population_amount = 100;
     let string_len = 100;
