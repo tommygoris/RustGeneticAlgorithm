@@ -14,7 +14,15 @@ use rand::prelude::*;
 use crate::genome::problem::{OneMax, FitnessFunction};
 use azul::widgets::text_input::{TextInput, TextInputState};
 use azul::dom::NodeType::Text;
+#[cfg(debug_assertions)]
+use std::time::Duration;
+use std::path::PathBuf;
+use azul::window::FakeWindow;
 
+macro_rules! css_path {() => { concat!(env!("CARGO_MANIFEST_DIR"), "/src/app.css")};}
+//macro_rules! FONT_PATH {() => { concat!(env!("CARGO_MANIFEST_DIR"), "/../assets/fonts/KoHo-Light.ttf")};}
+
+#[cfg(debug_assertions)]
 struct DataModel {
     counter: usize,
     text_input: TextInputState,
@@ -23,19 +31,51 @@ struct DataModel {
 
 
 impl Layout for DataModel {
-    fn layout(&self, _info: LayoutInfo<Self>) -> Dom<Self> {
-        Dom::label(String::from("Population"))
+    fn layout(&self, mut _info: LayoutInfo<Self>) -> Dom<Self> {
+
+        fn add_population_text_box(window: &mut FakeWindow<DataModel>, text_input: &TextInputState, data_model: &DataModel, label_text: String) -> Dom<DataModel> {
+
+            let text_input = TextInput::new()
+                .bind(window, &text_input, &data_model)
+                .dom(&text_input)
+                .with_class("test");
+
+            let label2 = Label::new(label_text).dom().with_class("left_align_label_text");
+
+            let label_div = Dom::div()
+                .with_class("label_with_textbox")
+                .with_child(text_input)
+                .with_child(label2);
+
+            Dom::div()
+                .with_child(label_div)
+        }
+        //add_population_text_box(_info, &self.text_input, &self)
+        Dom::div()
+            .with_class("orange")
+            .with_child(add_population_text_box(_info.window, &self.text_input, &self, String::from("Population:")))
+            .with_child(add_population_text_box(_info.window, &self.text_input, &self, String::from("Crossover Rate:")))
+            .with_child(add_population_text_box(_info.window, &self.text_input, &self, String::from("Mutation Rate:")))
+            .with_child(add_population_text_box(_info.window, &self.text_input, &self, String::from("Selection Rate:")))
+            .with_child(add_population_text_box(_info.window, &self.text_input, &self, String::from("Solution Fitness:")))
+            //.with_child(TextInput::new().dom(&self.text_input))
+            //.with_child(Dom::label(String::from("hello2")))
+            //.with_child(Dom::label(String::from("hello3")))
 //        TextInput::new()
 //            .bind(_info.window, &self.text_input, &self)
 //            .dom(&self.text_input)
-//            .with_id("text_input_1")
+//            .with_class("test")
     }
 }
 
 fn main() {
+    let mut file_path = PathBuf::new();
+    file_path.push("C:\\Users\\goris\\CLionProjects\\genetic_algorithm\\src\\app.css");
+    let mut css = css::hot_reload_override_native(file_path, Duration::from_millis(100));
     let mut app = App::new(DataModel { counter: 0, text_input: TextInputState::default() }, AppConfig::default()).unwrap();
-    let window = app.create_window(WindowCreateOptions::default(), css::native()).unwrap();
+    let window = app.create_hot_reload_window(WindowCreateOptions::default(), css).unwrap();
     app.run(window).unwrap();
+    let x = 1;
 
 
 

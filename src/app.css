@@ -1,0 +1,25 @@
+.test {
+    background: yellow;
+    width: 150px;
+
+}
+
+.orange {
+    background: red;
+    margin: 5px;
+    height: 200px
+}
+
+.left_align_label_text {
+    background: yellow;
+    padding-bottom: 4px;
+}
+
+.label_with_textbox {
+    background: blue;
+    height: 26px;
+    width: 260px;
+    flex-direction: row-reverse;
+    padding-top: 6px;
+
+}
