@@ -6,15 +6,16 @@ edition = "2018"
 exclude = ["../examples/*"]
 
 [dependencies]
-azul = { git = "https://github.com/maps4print/azul" }
+azul = { git = "https://github.com/tommygoris/azul"}
 rand = "0.6.5"
 plotters = { git = "https://github.com/38/plotters.git" }
-azul-dependencies       = { version = "*",                git = "https://github.com/maps4print/azul-dependencies", rev = "380b7e7cba8b728a3fc89fe28952e3b07aa624e7" }
+azul-dependencies       = { version = "0.1.0",                git = "https://github.com/maps4print/azul-dependencies", rev = "380b7e7cba8b728a3fc89fe28952e3b07aa624e7" }
 
 [features]
-default = []
 image_loading = ["azul-dependencies/image_loading"]
+default = []
 
 [[example]]
 name = "genetic_algorithm_gui"
 path = "../examples/genetic_algorithm_gui/main.rs"
+required-features = ["image_loading"]

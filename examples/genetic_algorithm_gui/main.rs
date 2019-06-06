@@ -51,11 +51,15 @@ impl Layout for DataModel {
                 .with_child(label_div)
         }
 
-//        fn add_chart_image() -> Dom<DataModel> {
-//            //Dom:div()
-//                //.with_class("image_div")
-//                //.with_child(Image())
-//        }
+        fn add_chart_image(resources: &AppResources) -> Dom<DataModel> {
+            let image_id = *resources.get_css_image_id("output").unwrap();
+            let image_info = resources.get_image_info(&image_id);
+            let image_bytes = resources.get_image_bytes(&image_id);
+            println!("{:?} {:?} {:?}", image_id, image_info, image_bytes);
+            Dom::div()
+                .with_class("image_div")
+                .with_child(Dom::image(image_id).with_id("chart"))
+        }
         //add_population_text_box(_info, &self.text_input, &self)
         Dom::div()
             .with_class("orange")
@@ -64,7 +68,7 @@ impl Layout for DataModel {
             .with_child(add_population_text_box(_info.window, &self.text_input, &self, String::from("Mutation Rate:")))
             .with_child(add_population_text_box(_info.window, &self.text_input, &self, String::from("Selection Rate:")))
             .with_child(add_population_text_box(_info.window, &self.text_input, &self, String::from("Solution Fitness:")))
-            .with_child(Dom::image(*_info.resources.get_css_image_id("output.png").unwrap()))
+            .with_child(add_chart_image(_info.resources))
             //.with_child(TextInput::new().dom(&self.text_input))
             //.with_child(Dom::label(String::from("hello2")))
             //.with_child(Dom::label(String::from("hello3")))
@@ -78,17 +82,18 @@ impl Layout for DataModel {
 fn main() {
     create_chart();
     let mut file_path = PathBuf::new();
-    file_path.push("C:\\Users\\goris\\CLionProjects\\genetic_algorithm\\src\\app.css");
+    file_path.push("C:\\Users\\goris\\CLionProjects\\genetic_algorithm\\examples\\genetic_algorithm_gui\\app.css");
     let mut css = css::hot_reload_override_native(file_path, Duration::from_millis(100));
     let mut app = App::new(DataModel { counter: 0, text_input: TextInputState::default() }, AppConfig::default()).unwrap();
 
     let image_id = app.app_state.resources.add_css_image_id("output");
 
-    app.app_state.resources.add_image(image_id, ImageSource::File(PathBuf::from("output.png")));
-
+    app.app_state.resources.add_image(image_id, ImageSource::File(PathBuf::from("C:\\Users\\goris\\CLionProjects\\genetic_algorithm\\0.png")));
+    let image_id = *app.app_state.resources.get_css_image_id("output").unwrap();
+    let image_info = app.app_state.resources.get_image_info(&image_id);
+    println!("{:?} {:?}", image_id, image_info);
     let window = app.create_hot_reload_window(WindowCreateOptions::default(), css).unwrap();
     app.run(window).unwrap();
-    let x = 1;
 
 
 

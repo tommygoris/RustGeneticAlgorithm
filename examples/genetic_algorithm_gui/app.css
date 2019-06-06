@@ -25,5 +25,15 @@
 }
 
 .image_div {
+    height: 100px;
+    width: 100px;
+}
 
+#chart {
+    background: pink;
+    max-width: 400px;
+    width: 100px;
+    height: 100px;
+    box-shadow-bottom: 0px 0px 50px black inset;
+    box-shadow-top: 0px 0px 50px black inset;
 }
