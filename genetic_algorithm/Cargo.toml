@@ -3,19 +3,22 @@ name = "genetic_algorithm"
 version = "0.1.0"
 authors = ["Tommy Goris <goristommyucf@knights.ucf.edu>"]
 edition = "2018"
-exclude = ["../examples/*"]
 
 [dependencies]
-azul = { git = "https://github.com/tommygoris/azul"}
 rand = "0.6.5"
 plotters = { git = "https://github.com/38/plotters.git" }
-azul-dependencies       = { version = "0.1.0",                git = "https://github.com/maps4print/azul-dependencies", rev = "380b7e7cba8b728a3fc89fe28952e3b07aa624e7" }
+azul = { git = "https://github.com/maps4print/azul.git" }
+#azul-dependencies = {git = "https://github.com/maps4print/azul-dependencies" }
 
-[features]
-image_loading = ["azul-dependencies/image_loading"]
-default = []
+#[dependencies.azul-dependencies]
+#git="https://github.com/maps4print/azul-dependencies"
+#rev="bf2933b9aac43a7003278862772250398e4fa457"
+
+#[features]
+#image_loading = ["azul-dependencies/image_loading"]
+#default = []
 
 [[example]]
 name = "genetic_algorithm_gui"
 path = "../examples/genetic_algorithm_gui/main.rs"
-required-features = ["image_loading"]
+#required-features = ["image_loading"]

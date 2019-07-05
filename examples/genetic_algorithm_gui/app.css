@@ -1,13 +1,13 @@
 .test {
-    background: yellow;
-    width: 150px;
-
+    background: cyan;
+    width: 100px;
+    height: 25px
 }
 
 .orange {
-    background: red;
+    background: green;
     margin: 5px;
-    height: 200px
+    height: 400px
 }
 
 .left_align_label_text {
@@ -17,8 +17,8 @@
 
 .label_with_textbox {
     background: blue;
-    height: 26px;
-    width: 260px;
+    height: 60px;
+    width: 200px;
     flex-direction: row-reverse;
     padding-top: 6px;
 
@@ -34,6 +34,4 @@
     max-width: 400px;
     width: 100px;
     height: 100px;
-    box-shadow-bottom: 0px 0px 50px black inset;
-    box-shadow-top: 0px 0px 50px black inset;
 }
