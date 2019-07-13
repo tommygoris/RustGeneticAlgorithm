@@ -7,9 +7,12 @@ edition = "2018"
 [dependencies]
 rand = "0.6.5"
 plotters = { git = "https://github.com/38/plotters.git" }
-gtk = "^0.7.0"
-relm = "^0.17.0"
-relm-derive = "^0.17.0"
+gio = "0.7.0"
+gtk =  "0.7.0"
+log = "0.4.7"
+simple-logging = "2.0.2"
+arrayref = "0.3.4"
+sha2 = "0.7.1"
 
 [[example]]
 name = "genetic_algorithm_gui"

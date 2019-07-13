@@ -1,20 +1,21 @@
 extern crate gtk;
+extern crate sha2;
+extern crate simple_logging;
 #[macro_use]
-extern crate relm;
-#[macro_use]
-extern crate relm_derive;
+extern crate arrayref;
 
+use gio::prelude::*;
 use gtk::prelude::*;
-use gtk::{Inhibit, Window, WindowType};
-use relm::{Relm, Update, Widget};
+use log::{info, warn, LevelFilter};
 
-use self::Msg::*;
+use gtk::{ApplicationWindow, Builder, Button, ComboBox, ComboBoxText, MessageDialog};
+use sha2::{Digest, Sha256};
 
 use genetic_algorithm::crossover::genome_crossover::StringCrossover;
 use genetic_algorithm::genome::population::{Individual, Population, ProblemType};
 use genetic_algorithm::genome::problem::{FitnessFunction, OneMax};
 use genetic_algorithm::mutation::genome_mutation::StringMutation;
-use genetic_algorithm::selection::genome_selection::TournamentSelection;
+use genetic_algorithm::selection::genome_selection::{SelectIndividual, TournamentSelection};
 use plotters::prelude::*;
 use rand::prelude::*;
 use rand::Rng;
@@ -23,80 +24,94 @@ use std::path::PathBuf;
 #[cfg(debug_assertions)]
 use std::time::Duration;
 
-#[derive(Msg)]
-enum Msg {
-    // …
-    Quit,
+const DEFAULT_POPULATION: u64 = 1000;
+const DEFAULT_CROSSOVER_RATE: f64 = 0.80;
+const DEFAULT_MUTATION_RATE: f64 = 0.05;
+const DEFAULT_PROBLEM: &str = "One Max";
+const DEFAULT_PROBLEM_TYPE: ProblemType = ProblemType::Max;
+const DEFAULT_K_VALUE: u32 = 7;
+const DEFAULT_ELITIST_VALUE: f64 = 0.85;
+const DEFAULT_SEED: &[u8; 32] = &[
+    1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 3, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4,
+];
+const DEFAULT_SELECTOR: Option<Box<SelectIndividual<T = String>>> = None;
+
+struct Model<T> {
+    population_size: u64,
+    crossover_rate: f64,
+    mutation_rate: f64,
+    problem_type: ProblemType,
+    selector: Option<Box<SelectIndividual<T = T>>>,
 }
 
-struct Model {
-    // …
+fn create_hash(text: &str) -> String {
+    let mut hasher = Sha256::default();
+    hasher.input(text.as_bytes());
+    format!("{:x}", hasher.result())
 }
 
-struct Win {
-    // …
-    model: Model,
-    window: Window,
+fn selection_combobox_changed_cb() {
+    info!("selection selector changed");
 }
 
-impl Update for Win {
-    // Specify the model used for this widget.
-    type Model = Model;
-    // Specify the model parameter used to init the model.
-    type ModelParam = ();
-    // Specify the type of the messages sent to the update function.
-    type Msg = Msg;
+fn on_problem_combobox_changed(builder: &Builder) {
+    info!("problem changed");
 
-    // Return the initial model.
-    fn model(_: &Relm<Self>, _: ()) -> Model {
-        Model {}
-    }
+    let model = Box::new(Model {
+        population_size: DEFAULT_POPULATION,
+        crossover_rate: DEFAULT_CROSSOVER_RATE,
+        mutation_rate: DEFAULT_MUTATION_RATE,
+        problem_type: DEFAULT_PROBLEM_TYPE,
+        selector: DEFAULT_SELECTOR,
+    });
 
-    // The model may be updated when a message is received.
-    // Widgets may also be updated in this function.
-    fn update(&mut self, event: Msg) {
-        match event {
-            Msg::Quit => gtk::main_quit(),
-        }
-    }
+    let selection_combobox: ComboBoxText = builder
+        .get_object("selection_combobox")
+        .expect("Couldn't get the selection combo box");
+
+    selection_combobox.append(
+        Some(String::from("Tournament Selection").as_str()),
+        String::from("Tournament Selection").as_str(),
+    );
+
+    selection_combobox.connect_changed(move |model| selection_combobox_changed_cb());
+
+    selection_combobox.set_active_id(Some(String::from("Tournament Selection").as_str()));
 }
 
-impl Widget for Win {
-    // Specify the type of the root widget.
-    type Root = Window;
+fn build_ui(application: &gtk::Application) {
+    let glade_src = include_str!("window.glade");
+    let builder = Builder::new_from_string(glade_src);
 
-    // Return the root widget.
-    fn root(&self) -> Self::Root {
-        self.window.clone()
-    }
+    let window: ApplicationWindow = builder.get_object("window1").expect("Couldn't get window1");
+    window.set_application(Some(application));
 
-    // Create the widgets.
-    fn view(relm: &Relm<Self>, model: Self::Model) -> Self {
-        // GTK+ widgets are used normally within a `Widget`.
-        let window = Window::new(WindowType::Toplevel);
+    let problem_combobox: ComboBoxText = builder
+        .get_object("problem_combobox")
+        .expect("Couldn't get the problem combobox");
 
-        // Connect the signal `delete_event` to send the `Quit` message.
-        connect!(
-            relm,
-            window,
-            connect_delete_event(_, _),
-            return (Some(Msg::Quit), Inhibit(false))
-        );
-        // There is also a `connect!()` macro for GTK+ events that do not need a
-        // value to be returned in the callback.
+    problem_combobox.append(Some(DEFAULT_PROBLEM), DEFAULT_PROBLEM);
 
-        window.show_all();
+    problem_combobox.connect_changed(move |_| on_problem_combobox_changed(&builder));
 
-        Win {
-            model,
-            window: window,
-        }
-    }
+    problem_combobox.set_active_id(Some(DEFAULT_PROBLEM));
+    window.show_all();
 }
 
 fn main() {
-    //create_chart();
-    Win::run(()).expect("Win::run failed");
+    simple_logging::log_to_stderr(LevelFilter::Info);
+    info!("Starting");
+    let application = gtk::Application::new(
+        Some("com.github.gtk-rs.examples.builder_basics"),
+        Default::default(),
+    )
+    .expect("Initialization failed...");
+
+    application.connect_activate(|app| {
+        build_ui(app);
+    });
+
+    application.run(&args().collect::<Vec<_>>());
 }
 
 //fn one_step(population: &mut Population<String>) {
