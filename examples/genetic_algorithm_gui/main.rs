@@ -10,21 +10,29 @@ extern crate simple_logging;
 extern crate arrayref;
 extern crate glib;
 
+mod one_max;
+mod problem_settings;
+
 use log::{info, warn, LevelFilter};
 
+use glib::GString;
 use gtk::Orientation::{Horizontal, Vertical};
 use gtk::{
-    BoxExt, Button, ButtonExt, Container, ContainerExt, EntryBuilder, Inhibit, Label, LabelExt,
-    RadioButtonExt, ToggleButtonExt, WidgetExt, Window, WindowType,
+    BoxExt, Button, ButtonExt, ComboBoxExt, ComboBoxTextExt, Container, ContainerExt,
+    EditableSignals, EntryBuilder, EntryExt, Inhibit, Label, LabelExt, RadioButtonExt,
+    ToggleButtonExt, WidgetExt, Window, WindowType,
 };
+
 use relm::{EventStream, Relm, Update, Widget, WidgetTest};
 use sha2::{Digest, Sha256};
 
-use genetic_algorithm::crossover::genome_crossover::StringCrossover;
+use crate::problem_settings::ProblemSettings;
+use genetic_algorithm::crossover::genome_crossover::{Crossover, StringCrossover};
+use genetic_algorithm::genome::fitness_function::FitnessFunction;
 use genetic_algorithm::genome::population::{Individual, Population, ProblemType};
-use genetic_algorithm::genome::problem::{FitnessFunction, OneMax};
 use genetic_algorithm::mutation::genome_mutation::StringMutation;
 use genetic_algorithm::selection::genome_selection::{SelectIndividual, TournamentSelection};
+use gio::SocketConnectableExt;
 use plotters::prelude::*;
 use rand::prelude::*;
 use rand::Rng;
@@ -44,128 +52,36 @@ const DEFAULT_ELITIST_VALUE: f64 = 0.85;
 const DEFAULT_SEED: &[u8; 32] = &[
     1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 3, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4,
 ];
+const DEFAULT_CROSSOVER_POINTS: u32 = 5;
+const DEFAULT_SELECTION_TYPE: &str = "Tournament Selection";
 
-//struct Model<T> {
-//    population_size: u64,
-//    crossover_rate: f64,
-//    mutation_rate: f64,
-//    problem_type: ProblemType,
-//    selector: Option<Box<SelectIndividual<T = T>>>,
-//}
-//
-//impl<T> Model<T> {
-//    fn get_population_size(&mut self) -> &mut u64 {
-//        &mut self.population_size
-//    }
-//
-//    fn set_population_size(&mut self, new_val: u64) {
-//        self.population_size = new_val;
-//    }
-//}
-//
-//fn create_hash(text: &str) -> String {
-//    let mut hasher = Sha256::default();
-//    hasher.input(text.as_bytes());
-//    format!("{:x}", hasher.result())
-//}
-//
-//fn selection_combobox_changed_cb() {
-//    info!("selection selector changed");
-//}
-//
-//fn set_selection_combobox<T>(builder: &Builder, model: &Box<Model<T>>) {
-//    let selection_combobox: ComboBoxText = builder
-//        .get_object("selection_combobox")
-//        .expect("Couldn't get the selection combo box");
-//
-//    selection_combobox.append(
-//        Some(String::from("Tournament Selection").as_str()),
-//        String::from("Tournament Selection").as_str(),
-//    );
-//
-//    selection_combobox.connect_changed(move |_| selection_combobox_changed_cb());
-//
-//    selection_combobox.set_active_id(Some(String::from("Tournament Selection").as_str()));
-//}
-//
-//fn set_population_entry<T>(builder: &Builder, model: &'static mut Box<Model<T>>) {
-//    let population_entry: Entry = builder
-//        .get_object("population_entry")
-//        .expect("Couldn't get the population entry");
-//
-//    population_entry.connect_changed(move |_| model.set_population(10));
-//
-//    set_entry(&population_entry, DEFAULT_POPULATION.to_string().as_str());
-//}
-//
-//fn set_crossover_rate_entry<T>(builder: &Builder, model: &Box<Model<T>>) {
-//    let crossover_entry: Entry = builder
-//        .get_object("crossover_entry")
-//        .expect("Couldn't get the population entry");
-//
-//    set_entry(
-//        &crossover_entry,
-//        DEFAULT_CROSSOVER_RATE.to_string().as_str(),
-//    );
-//}
-//
-//fn set_mutation_rate_entry<T>(builder: &Builder, model: &Box<Model<T>>) {
-//    let mutation_entry: Entry = builder
-//        .get_object("mutation_entry")
-//        .expect("Couldn't get the population entry");
-//
-//    set_entry(&mutation_entry, DEFAULT_MUTATION_RATE.to_string().as_str());
-//}
-//
-//fn set_entry(entry: &Entry, text: &str) {
-//    entry.set_text(text);
-//}
-//
-//fn on_problem_combobox_changed(builder: &Builder) {
-//    info!("problem changed");
-//
-//    let model = Box::new(Model {
-//        population_size: DEFAULT_POPULATION,
-//        crossover_rate: DEFAULT_CROSSOVER_RATE,
-//        mutation_rate: DEFAULT_MUTATION_RATE,
-//        problem_type: DEFAULT_PROBLEM_TYPE,
-//        selector: DEFAULT_SELECTOR,
-//    });
-//
-//    set_selection_combobox(builder, &model);
-//    set_population_entry(builder, &mut model);
-//    set_crossover_rate_entry(builder, &model);
-//    set_mutation_rate_entry(builder, &model)
-//}
-//
-//fn build_ui(application: &gtk::Application) {
-//    let glade_src = include_str!("window.glade");
-//    let builder = Builder::new_from_string(glade_src);
-//
-//    let window: ApplicationWindow = builder.get_object("window1").expect("Couldn't get window1");
-//    window.set_application(Some(application));
-//
-//    let problem_combobox: ComboBoxText = builder
-//        .get_object("problem_combobox")
-//        .expect("Couldn't get the problem combobox");
-//
-//    problem_combobox.append(Some(DEFAULT_PROBLEM), DEFAULT_PROBLEM);
-//
-//    problem_combobox.connect_changed(move |_| on_problem_combobox_changed(&builder));
-//
-//    problem_combobox.set_active_id(Some(DEFAULT_PROBLEM));
-//    window.show_all();
-//}
+#[derive(Copy, Clone)]
+enum Step {
+    Inf,
+    Steps(u64),
+}
 
-struct Model {
+#[derive(Clone, Debug)]
+enum SelectionTypes {
+    Tournament,
+    Random,
+    FitnessProportionate,
+}
+
+pub struct Model {
     population_size: u64,
     crossover_rate: f64,
     mutation_rate: f64,
     problem_type: ProblemType,
+    seed: [u8; 32],
+    selection_type: String,
+    problem_to_solve: String,
+    steps: Step,
+    current_problem: Option<Box<dyn ProblemSettings>>,
     // selector: Option<Box<SelectIndividual<T = T>>>,
 }
 
-#[derive(Clone, Debug)]
+#[derive(Copy, Clone, Debug)]
 enum Msg {
     Quit,
     ProblemChanged,
@@ -174,17 +90,23 @@ enum Msg {
     MutationRateChanged,
     SelectionChanged,
     ProblemRadioChangedToggleChanged,
+    SeedChanged,
+    StartGA,
+    ResumeGA,
+    StopGA,
 }
 
 // Create the structure that holds the widgets used in the view.
 #[derive(Clone)]
 struct Widgets {
-    problem_combobox: gtk::ComboBox,
+    problem_combobox: gtk::ComboBoxText,
     population_entry: gtk::Entry,
     crossover_rate_entry: gtk::Entry,
     mutation_rate_entry: gtk::Entry,
-    selection_type_combobox: gtk::ComboBox,
+    selection_type_combobox: gtk::ComboBoxText,
     radio_buttons: Vec<gtk::RadioButton>,
+    seed_entry: gtk::Entry,
+    population_list_box: gtk::ListBox,
 }
 
 fn main() {
@@ -193,7 +115,40 @@ fn main() {
     info!("Starting");
     let main_stream = EventStream::new();
 
-    fn create_label_entry_box(label_text: &str) -> (gtk::Box, gtk::Entry) {
+    fn create_button_box(
+        label_text: &str,
+        stream: &EventStream<Msg>,
+        msg: Msg,
+    ) -> (gtk::Box, gtk::Button) {
+        let problem_inner_vbox = gtk::Box::new(Horizontal, 10);
+        let button = gtk::Button::new_with_label(label_text);
+
+        problem_inner_vbox.pack_start(&button, false, true, 5);
+
+        let stream = stream.clone();
+        button.connect_clicked(move |_| {
+            stream.emit(msg.clone());
+        });
+
+        (problem_inner_vbox, button)
+    }
+    fn create_listbox_box(label_text: &str) -> (gtk::Box, gtk::ListBox) {
+        let problem_inner_vbox = gtk::Box::new(Horizontal, 10);
+        let problem_type_label = gtk::Label::new(Some(label_text));
+
+        let listbox = gtk::ListBox::new();
+
+        problem_inner_vbox.pack_start(&problem_type_label, false, true, 5);
+        problem_inner_vbox.pack_start(&listbox, false, true, 5);
+
+        (problem_inner_vbox, listbox)
+    }
+    fn create_label_entry_box(
+        label_text: &str,
+        stream: &EventStream<Msg>,
+        msg: Msg,
+        initial_entry_val: &str,
+    ) -> (gtk::Box, gtk::Entry) {
         let problem_inner_vbox = gtk::Box::new(Horizontal, 10);
 
         let problem_type_label = gtk::Label::new(Some(label_text));
@@ -203,25 +158,49 @@ fn main() {
         problem_inner_vbox.pack_start(&problem_type_label, false, true, 5);
         problem_inner_vbox.pack_start(&problem_type_entry, false, true, 5);
 
+        let stream = stream.clone();
+        problem_type_entry.connect_changed(move |_| {
+            stream.emit(msg.clone());
+        });
+
+        problem_type_entry.set_text(initial_entry_val);
         (problem_inner_vbox, problem_type_entry)
     }
 
-    fn create_label_combobox_box(label_text: &str) -> (gtk::Box, gtk::ComboBox) {
+    fn create_label_combobox_box(
+        label_text: &str,
+        text_entries: &Vec<&str>,
+        stream: &EventStream<Msg>,
+        msg: Msg,
+    ) -> (gtk::Box, gtk::ComboBoxText) {
         let problem_inner_vbox = gtk::Box::new(Horizontal, 10);
 
         let problem_type_label = gtk::Label::new(Some(label_text));
         problem_type_label.set_width_chars(20);
-        let problem_type_combobox = gtk::ComboBox::new();
+        let problem_type_combobox = gtk::ComboBoxText::new();
 
         problem_inner_vbox.pack_start(&problem_type_label, false, true, 5);
         problem_inner_vbox.pack_start(&problem_type_combobox, false, true, 5);
 
+        let stream = stream.clone();
+        problem_type_combobox.connect_changed(move |_| {
+            stream.emit(msg.clone());
+        });
+
+        if text_entries.len() > 0 {
+            for (index, item) in text_entries.iter().enumerate() {
+                problem_type_combobox.append(Some(item), item);
+            }
+
+            problem_type_combobox.set_active_id(Some(text_entries[0]));
+        }
         (problem_inner_vbox, problem_type_combobox)
     }
 
     fn create_problem_type_radio_group(
         radio_text: Vec<&str>,
         stream: &EventStream<Msg>,
+        msg: Msg,
     ) -> (gtk::Box, Vec<gtk::RadioButton>) {
         let problem_inner_vbox = gtk::Box::new(Horizontal, 10);
         let mut radio_vector = vec![];
@@ -229,7 +208,6 @@ fn main() {
             let first_radio_button = gtk::RadioButton::new_with_label(radio_text[0]);
             radio_vector.push(first_radio_button.clone());
             problem_inner_vbox.pack_start(&first_radio_button, false, false, 5);
-
             for str in radio_text.iter().skip(1) {
                 let radio_button = gtk::RadioButton::new_with_label(str);
 
@@ -239,7 +217,7 @@ fn main() {
 
                 let stream = stream.clone();
                 radio_button.connect_clicked(move |_| {
-                    stream.emit(Msg::ProblemRadioChangedToggleChanged);
+                    stream.emit(msg.clone());
                 });
                 radio_vector.push(radio_button.clone());
             }
@@ -250,19 +228,64 @@ fn main() {
     // Create the view using the normal GTK+ method calls.
     let outer_vbox = gtk::Box::new(Vertical, 0);
 
-    let radio_widgets = create_problem_type_radio_group(vec!["Max", "Min"], &main_stream);
-    let population_entry = create_label_entry_box("Population Size");
-    let crossover_entry = create_label_entry_box("Crossover Rate");
-    let mutation_entry = create_label_entry_box("Mutation Rate");
-    let problem_combobox = create_label_combobox_box("Problem");
-    let selection_type_combobox = create_label_combobox_box("Selection Type");
+    let radio_widgets = create_problem_type_radio_group(
+        vec!["Max", "Min"],
+        &main_stream,
+        Msg::ProblemRadioChangedToggleChanged,
+    );
+    let population_entry = create_label_entry_box(
+        "Population Size",
+        &main_stream,
+        Msg::PopulationChanged,
+        DEFAULT_POPULATION.to_string().as_str(),
+    );
+    let crossover_entry = create_label_entry_box(
+        "Crossover Rate",
+        &main_stream,
+        Msg::CrossoverRateChanged,
+        DEFAULT_CROSSOVER_RATE.to_string().as_str(),
+    );
+    let mutation_entry = create_label_entry_box(
+        "Mutation Rate",
+        &main_stream,
+        Msg::MutationRateChanged,
+        DEFAULT_MUTATION_RATE.to_string().as_str(),
+    );
+    let problem_combobox = create_label_combobox_box(
+        "Problem",
+        &mut vec!["One Max"],
+        &main_stream,
+        Msg::ProblemChanged,
+    );
+    let selection_type_combobox = create_label_combobox_box(
+        "Selection Type",
+        &mut vec!["Tournament Selection"],
+        &main_stream,
+        Msg::SelectionChanged,
+    );
+    let seed_entry = create_label_entry_box(
+        "Seed",
+        &main_stream,
+        Msg::SeedChanged,
+        std::str::from_utf8(DEFAULT_SEED).unwrap(),
+    );
+    let population_list_box = create_listbox_box("Population");
+    let start_button = create_button_box("Start", &main_stream, Msg::StartGA);
+    let resume_button = create_button_box("Stop", &main_stream, Msg::StopGA);
+    let stop_button = create_button_box("Resume", &main_stream, Msg::ResumeGA);
 
+    start_button.0.pack_start(&resume_button.0, false, false, 5);
+    start_button.0.pack_start(&stop_button.0, false, false, 5);
     outer_vbox.pack_start(&problem_combobox.0, false, false, 5);
     outer_vbox.pack_start(&population_entry.0, false, false, 5);
     outer_vbox.pack_start(&crossover_entry.0, false, false, 5);
     outer_vbox.pack_start(&mutation_entry.0, false, false, 5);
     outer_vbox.pack_start(&selection_type_combobox.0, false, false, 5);
     outer_vbox.pack_start(&radio_widgets.0, false, false, 5);
+    outer_vbox.pack_start(&radio_widgets.0, false, false, 5);
+    outer_vbox.pack_start(&seed_entry.0, false, false, 5);
+    outer_vbox.pack_start(&population_list_box.0, false, false, 5);
+    outer_vbox.pack_start(&start_button.0, false, false, 5);
 
     let ch = outer_vbox.get_children();
 
@@ -279,6 +302,8 @@ fn main() {
         mutation_rate_entry: mutation_entry.1,
         selection_type_combobox: selection_type_combobox.1,
         radio_buttons: radio_widgets.1,
+        seed_entry: seed_entry.1,
+        population_list_box: population_list_box.1,
     };
 
     main_stream.observe(move |event: &Msg| {
@@ -297,6 +322,11 @@ fn main() {
         crossover_rate: DEFAULT_CROSSOVER_RATE,
         mutation_rate: DEFAULT_MUTATION_RATE,
         problem_type: DEFAULT_PROBLEM_TYPE,
+        seed: *DEFAULT_SEED,
+        selection_type: DEFAULT_SELECTION_TYPE.to_string(),
+        problem_to_solve: DEFAULT_PROBLEM.to_string(),
+        steps: Step::Inf,
+        current_problem: None,
     };
 
     fn update(event: Msg, model: &mut Model, widgets: &Widgets) {
@@ -307,7 +337,7 @@ fn main() {
                 gtk::main_quit()
             }
             Msg::ProblemRadioChangedToggleChanged => {
-                info!("Changed");
+                info!("ProblemRadioChanged");
                 let radio_widgets = &widgets.radio_buttons;
 
                 let first_radio_button = &radio_widgets[0];
@@ -327,6 +357,143 @@ fn main() {
 
                 //model.problem_type =
             }
+            Msg::ProblemChanged => {
+                info!("ProblemChanged");
+
+                let combobox_widget = &widgets.problem_combobox;
+                let combobox_current_text_option = combobox_widget.get_active_text();
+
+                if let Some(current_active_text) = combobox_current_text_option {
+                    model.problem_to_solve = current_active_text.to_string();
+                }
+            }
+            Msg::PopulationChanged => {
+                let population_option = widgets.population_entry.get_text();
+
+                if let Some(population_string) = population_option {
+                    let population_string = population_string.to_string();
+                    let population_size = population_string.parse::<u64>();
+
+                    match population_size {
+                        Ok(pop_size) => model.population_size = pop_size,
+                        Err(e) => {
+                            info!("Number too large to parse {:?}", e);
+                            model.population_size = std::u64::MAX;
+                            widgets
+                                .population_entry
+                                .set_text(std::u64::MAX.to_string().as_str());
+                        }
+                    }
+
+                    info!("New population is: {:?}", model.population_size);
+
+                    info!("PopulationChanged");
+                }
+            }
+            Msg::CrossoverRateChanged => {
+                let crossoverrate_option = widgets.crossover_rate_entry.get_text();
+
+                if let Some(crossover_string) = crossoverrate_option {
+                    let crossover_string = crossover_string.to_string();
+                    let crossover_rate = crossover_string.parse::<f64>();
+
+                    match crossover_rate {
+                        Ok(cross_rate) => model.crossover_rate = cross_rate,
+                        Err(e) => {
+                            info!("Number couldn't be parsed {:?}", e);
+                            let lower_limit_rate = 0.0;
+                            model.crossover_rate = lower_limit_rate;
+                            widgets
+                                .crossover_rate_entry
+                                .set_text(lower_limit_rate.to_string().as_str());
+                        }
+                    }
+
+                    info!("New crossrate rate is: {:?}", model.crossover_rate);
+                }
+
+                info!("CrossoverRateChanged");
+            }
+            Msg::MutationRateChanged => {
+                let mutation_option = widgets.mutation_rate_entry.get_text();
+
+                if let Some(mutation_string) = mutation_option {
+                    let mutation_string = mutation_string.to_string();
+                    let mutation_rate = mutation_string.parse::<f64>();
+
+                    match mutation_rate {
+                        Ok(mut_rate) => model.mutation_rate = mut_rate,
+                        Err(e) => {
+                            info!("Number couldn't be parsed {:?}", e);
+                            model.mutation_rate = std::f64::MAX;
+                            widgets
+                                .mutation_rate_entry
+                                .set_text(std::f64::MAX.to_string().as_str());
+                        }
+                    }
+
+                    info!("New mutation rate is: {:?}", model.mutation_rate);
+                    info!("MutationRateChanged");
+                }
+            }
+            Msg::SelectionChanged => {
+                info!("SelectionChanged");
+                let combobox_widget = &widgets.selection_type_combobox;
+                let combobox_current_text_option = combobox_widget.get_active_text();
+
+                if let Some(current_active_text) = combobox_current_text_option {
+                    model.selection_type = current_active_text.to_string();
+                }
+            }
+            Msg::SeedChanged => {
+                info!("SeedChanged");
+                let seed_string_option = widgets.seed_entry.get_text();
+
+                if let Some(seed_string) = seed_string_option {
+                    let seed_string = seed_string.to_string();
+                    let hash = create_hash(seed_string.as_str());
+                    let new_seed = array_ref!(hash.as_bytes(), 0, 32);
+                    model.seed = *new_seed;
+
+                    info!("New seed is: {:?}", new_seed);
+                } else {
+                    info!("Failed to convert the seed string option to a string");
+                }
+            }
+            Msg::StartGA => {
+                info!("GA started");
+                let selection_combobox_option =
+                    &widgets.selection_type_combobox.get_active_text().unwrap();
+                let problem_combobox_option = &widgets.problem_combobox.get_active_text().unwrap();
+
+                let mut selector =
+                    TournamentSelection::new(DEFAULT_K_VALUE, DEFAULT_ELITIST_VALUE, model.seed);
+                let mut crossover = StringCrossover::new(
+                    model.crossover_rate,
+                    DEFAULT_CROSSOVER_POINTS,
+                    model.seed,
+                );
+                info!("Starting with tournament Selection");
+                let mut mutation =
+                    StringMutation::new(model.mutation_rate, vec!['0', '1'], model.seed);
+
+                let mut one_max = one_max::one_max::OneMax::new(
+                    0,
+                    false,
+                    Box::new(crossover),
+                    Box::new(selector),
+                    Box::new(mutation),
+                    None,
+                );
+
+                one_max.on_start(model);
+                model.current_problem = Some(Box::new(one_max));
+
+                //if let Some(problem_text) = problem_combobox_option.0 {}
+                //                let ind_selection = if 0
+            }
+            Msg::ResumeGA => {}
+            Msg::StopGA => {}
         }
     }
 
@@ -337,18 +504,6 @@ fn main() {
     gtk::main();
 }
 
-//fn one_step(population: &mut Population<String>) {
-//
-//    if (isInitializing) {
-//        let selection = TournamentSelection::new(7,0.80, *seed);
-//        let mut crossover = StringCrossover::new(0.80, 7, *seed);
-//        let mut one_max_problem = OneMax::default();
-//        let mut selection = TournamentSelection::new(7,0.80, *seed);
-//
-//    }
-//    population.crossover(crossover, *selection, fitness_function);
-//    //population.mutate();
-//}
 fn create_chart() -> Result<(), Box<dyn std::error::Error>> {
     let root = BitMapBackend::new("0.png", (640, 480)).into_drawing_area();
     root.fill(&White)?;
@@ -377,29 +532,9 @@ fn create_chart() -> Result<(), Box<dyn std::error::Error>> {
 
     Ok(())
 }
-fn init_string_pop(seed: [u8; 32], one_max_problem: &mut OneMax) -> Population<String> {
-    let population_amount = 100;
-    let string_len = 100;
 
-    let mut population_list = Vec::new();
-
-    for _ in 0..population_amount {
-        let new_string_individual = generate_string_individual_one_max(string_len, seed);
-        let fitness = one_max_problem.calculate_fitness(&new_string_individual);
-        population_list.push(Individual::new(new_string_individual, fitness));
-    }
-
-    let population = Population::new(population_list, ProblemType::Max);
-    population
-}
-
-fn generate_string_individual_one_max(range: u32, seed: [u8; 32]) -> String {
-    let mut new_string_individual = String::new();
-    let characters = vec!['0', '1'];
-    let mut seed_gen: StdRng = SeedableRng::from_seed(seed);
-    for _ in 0..range {
-        let location = seed_gen.gen_range(0, characters.len()) as usize;
-        new_string_individual.push(characters[location]);
-    }
-    new_string_individual
+fn create_hash(text: &str) -> String {
+    let mut hasher = Sha256::default();
+    hasher.input(text.as_bytes());
+    format!("{:x}", hasher.result())
 }
