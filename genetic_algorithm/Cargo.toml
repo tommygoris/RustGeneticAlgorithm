@@ -16,6 +16,7 @@ sha2 = "0.7.1"
 relm = "0.17.0"
 relm-derive = "0.17.0"
 glib = "0.8.0"
+crossbeam-utils = "0.6"
 
 [[example]]
 name = "genetic_algorithm_gui"

@@ -1,17 +1,17 @@
 use crate::problem_settings::ProblemSettings;
 use crate::{Model, Step};
-
+use crossbeam_utils::thread;
 use genetic_algorithm::crossover::genome_crossover::Crossover;
 use genetic_algorithm::genome::fitness_function::FitnessFunction;
 use genetic_algorithm::genome::population::{Individual, Population, ProblemType};
 use genetic_algorithm::mutation::genome_mutation::{Mutate, StringMutation};
 use genetic_algorithm::selection::genome_selection::SelectIndividual;
+use log::{info, warn, LevelFilter};
 use rand::prelude::*;
 use rand::rngs::StdRng;
 use std::borrow::{Borrow, BorrowMut};
-use std::ops::Deref;
-use std::sync::Arc;
-use std::thread;
+use std::ops::{Deref, DerefMut};
+use std::sync::{Arc, Condvar, Mutex};
 use std::thread::JoinHandle;
 use std::thread::Thread;
 
@@ -20,15 +20,17 @@ struct OneMaxFitnessFunction;
 
 struct InternalState {
     current_gen: u64,
-    is_started: bool,
     crossover: Box<dyn Crossover<T = String> + Send + Sync>,
     selector: Box<dyn SelectIndividual<T = String> + Send + Sync>,
     mutation: Box<dyn Mutate<T = String> + Send + Sync>,
-    start_thread: Option<JoinHandle<()>>,
 }
 
 pub struct OneMax {
-    internal_state: Arc<InternalState>,
+    internal_state: InternalState,
+    is_started: bool,
+    pop: Option<Population<String>>,
+    seed: [u8; 32],
+    population_size: u64,
 }
 impl OneMax {
     pub fn new(
@@ -37,48 +39,50 @@ impl OneMax {
         crossover: Box<dyn Crossover<T = String> + Send + Sync>,
         selector: Box<dyn SelectIndividual<T = String> + Send + Sync>,
         mutation: Box<dyn Mutate<T = String> + Send + Sync>,
-        start_thread: Option<JoinHandle<()>>,
+        seed: &[u8; 32],
+        population_size: u64,
     ) -> OneMax {
-        let internal_state = Arc::new(InternalState {
+        let internal_state = InternalState {
             current_gen,
-            is_started,
             crossover,
             selector,
             mutation,
-            start_thread,
-        });
+        };
+        OneMax {
+            internal_state,
+            is_started,
+            pop: None,
+            seed: *seed,
+            population_size,
+        }
+    }
 
-        OneMax { internal_state }
+    pub fn population(&mut self) -> &Option<Population<String>> {
+        &self.pop
     }
 }
 
 impl ProblemSettings for OneMax {
-    fn on_start(&mut self, model: &Model) {
-        let mut one_max = self.deref().clone();
-        let mut pop = init_string_pop(
-            model.seed,
-            model.population_size,
-            Box::new(OneMaxFitnessFunction::default()),
-        );
-        let steps = model.steps.clone();
-        let handler = thread::spawn(move || match steps {
-            Step::Inf => loop {
-                step_one(pop.borrow_mut(), &mut one_max)
-            },
-            Step::Steps(num_step) => {
-                for _ in 0..num_step {
-                    step_one(pop.borrow_mut(), &mut one_max)
-                }
-            }
-        });
-        self.internal_state.start_thread = Option::from(handler);
+    fn on_start(&mut self) {
+        if let Some(pop) = &mut self.pop {
+            info!("old pop");
+            step_one(pop.borrow_mut(), &mut self.internal_state);
+        } else {
+            info!("new pop");
+            let mut pop = init_string_pop(
+                self.seed,
+                self.population_size,
+                Box::new(OneMaxFitnessFunction::default()),
+            );
+            self.pop = Some(pop);
+            step_one(&mut self.pop.clone().unwrap(), &mut self.internal_state)
     }
 
-    fn on_pause(&mut self, model: &Model) {
+    fn on_pause(&mut self) {
         unimplemented!()
     }
 
-    fn on_stop(&mut self, model: &Model) {
+    fn on_stop(&mut self) {
         unimplemented!()
     }
 }
@@ -97,16 +101,18 @@ impl FitnessFunction for OneMaxFitnessFunction {
     }
 }
 
-fn step_one(pop: &mut Population<String>, one_max: &mut OneMax) {
+fn step_one(pop: &mut Population<String>, one_max: &mut InternalState) {
     pop.crossover(
-        one_max.internal_state.crossover.as_mut(),
-        one_max.internal_state.selector.as_mut(),
+        one_max.crossover.as_mut(),
+        one_max.selector.as_mut(),
         Box::new(OneMaxFitnessFunction::default()),
     );
+
     pop.mutate(
-        one_max.internal_state.mutation.as_mut(),
+        one_max.mutation.as_mut(),
         Box::new(OneMaxFitnessFunction::default()),
     );
+
     pop.print_pop();
 }
 

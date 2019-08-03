@@ -1,3 +1,4 @@
+#![feature(wait_until)]
 extern crate gtk;
 #[macro_use]
 extern crate relm;
@@ -26,7 +27,9 @@ use gtk::{
 use relm::{EventStream, Relm, Update, Widget, WidgetTest};
 use sha2::{Digest, Sha256};
 
+use crate::one_max::one_max::OneMax;
 use crate::problem_settings::ProblemSettings;
+use crossbeam_utils::thread::scope;
 use genetic_algorithm::crossover::genome_crossover::{Crossover, StringCrossover};
 use genetic_algorithm::genome::fitness_function::FitnessFunction;
 use genetic_algorithm::genome::population::{Individual, Population, ProblemType};
@@ -36,13 +39,17 @@ use gio::SocketConnectableExt;
 use plotters::prelude::*;
 use rand::prelude::*;
 use rand::Rng;
+use std::borrow::{Borrow, BorrowMut};
 use std::convert::TryFrom;
 use std::env::args;
 use std::path::PathBuf;
+use std::sync::mpsc::{channel, Receiver, Sender, TryRecvError};
+use std::sync::{Arc, Condvar, Mutex};
+use std::thread;
 #[cfg(debug_assertions)]
 use std::time::Duration;
 
-const DEFAULT_POPULATION: u64 = 1000;
+const DEFAULT_POPULATION: u64 = 1;
 const DEFAULT_CROSSOVER_RATE: f64 = 0.80;
 const DEFAULT_MUTATION_RATE: f64 = 0.05;
 const DEFAULT_PROBLEM: &str = "One Max";
@@ -55,7 +62,7 @@ const DEFAULT_SEED: &[u8; 32] = &[
 const DEFAULT_CROSSOVER_POINTS: u32 = 5;
 const DEFAULT_SELECTION_TYPE: &str = "Tournament Selection";
 
-#[derive(Copy, Clone)]
+#[derive(Copy, Clone, Debug)]
 enum Step {
     Inf,
     Steps(u64),
@@ -77,8 +84,10 @@ pub struct Model {
     selection_type: String,
     problem_to_solve: String,
     steps: Step,
-    current_problem: Option<Box<dyn ProblemSettings>>,
-    // selector: Option<Box<SelectIndividual<T = T>>>,
+    current_problem: Option<Box<dyn ProblemSettings + Send + Sync>>,
+    sender: Option<Sender<()>>,
+    mutex_cond: Option<Arc<(Mutex<bool>, Condvar)>>,
+    // selector: Option<Box<SelectIndividual<T = T>>>
 }
 
 #[derive(Copy, Clone, Debug)]
@@ -93,7 +102,7 @@ enum Msg {
     SeedChanged,
     StartGA,
     ResumeGA,
-    StopGA,
+    PauseGA,
 }
 
 // Create the structure that holds the widgets used in the view.
@@ -271,7 +280,7 @@ fn main() {
     );
     let population_list_box = create_listbox_box("Population");
     let start_button = create_button_box("Start", &main_stream, Msg::StartGA);
-    let resume_button = create_button_box("Stop", &main_stream, Msg::StopGA);
+    let resume_button = create_button_box("Stop", &main_stream, Msg::PauseGA);
     let stop_button = create_button_box("Resume", &main_stream, Msg::ResumeGA);
 
     start_button.0.pack_start(&resume_button.0, false, false, 5);
@@ -327,6 +336,8 @@ fn main() {
         problem_to_solve: DEFAULT_PROBLEM.to_string(),
         steps: Step::Inf,
         current_problem: None,
+        sender: None,
+        mutex_cond: None,
     };
 
     fn update(event: Msg, model: &mut Model, widgets: &Widgets) {
@@ -483,17 +494,49 @@ fn main() {
                     Box::new(crossover),
                     Box::new(selector),
                     Box::new(mutation),
-                    None,
+                    &model.seed,
+                    model.population_size,
                 );
 
-                one_max.on_start(model);
-                model.current_problem = Some(Box::new(one_max));
+                let steps = model.steps.clone();
 
-                //if let Some(problem_text) = problem_combobox_option.0 {}
-                //                let ind_selection = if 0
+                let (tx, rx) = channel();
+                model.sender = Some(tx);
+                let pair = Arc::new((Mutex::new(true), Condvar::new()));
+                let pair2 = pair.clone();
+                model.mutex_cond = Some(pair);
+                let handler = thread::spawn(move || {
+                    let &(ref lock, ref cvar) = &*pair2;
+                    match steps {
+                        Step::Inf => loop {
+                            one_max.on_start();
+                            let pop = one_max.population();
+
+                            let _guard = cvar
+                                .wait_until(lock.lock().unwrap(), |started| *started)
+                                .unwrap();
+                        },
+                        Step::Steps(num_step) => {
+                            for _ in 0..num_step {
+                                one_max.on_start();
+                                let _guard = cvar
+                                    .wait_until(lock.lock().unwrap(), |started| *started)
+                                    .unwrap();
+                            }
+                        }
+                    }
+                });
             }
-            Msg::ResumeGA => {}
-            Msg::StopGA => {}
+            Msg::ResumeGA => {
+                let mut started = model.mutex_cond.as_ref().unwrap().0.lock().unwrap();
+                *started = true;
+                model.mutex_cond.as_ref().unwrap().1.notify_one();
+            }
+            Msg::PauseGA => {
+                let mut started = model.mutex_cond.as_ref().unwrap().0.lock().unwrap();
+                *started = false;
+                model.mutex_cond.as_ref().unwrap().1.notify_one();
+            }
         }
     }
 

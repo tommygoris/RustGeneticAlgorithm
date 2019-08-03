@@ -13,20 +13,11 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5fe25c1d-23ae-4568-95fb-10b82f2ab22c" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/examples/genetic_algorithm_gui/one_max/mod.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/examples/genetic_algorithm_gui/one_max/one_max.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/examples/genetic_algorithm_gui/problem_settings.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/genetic_algorithm/src/genome/fitness_function.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/genetic_algorithm.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/genetic_algorithm.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/examples/genetic_algorithm_gui/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/examples/genetic_algorithm_gui/main.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/genetic_algorithm_gui/window.glade" beforeDir="false" afterPath="$PROJECT_DIR$/examples/genetic_algorithm_gui/window.glade" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/genetic_algorithm/src/crossover/genome_crossover.rs" beforeDir="false" afterPath="$PROJECT_DIR$/genetic_algorithm/src/crossover/genome_crossover.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/genetic_algorithm/src/genome/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/genetic_algorithm/src/genome/mod.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/genetic_algorithm/src/genome/population.rs" beforeDir="false" afterPath="$PROJECT_DIR$/genetic_algorithm/src/genome/population.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/genetic_algorithm/src/genome/problem.rs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/genetic_algorithm/src/mutation/genome_mutation.rs" beforeDir="false" afterPath="$PROJECT_DIR$/genetic_algorithm/src/mutation/genome_mutation.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/genetic_algorithm/src/selection/genome_selection.rs" beforeDir="false" afterPath="$PROJECT_DIR$/genetic_algorithm/src/selection/genome_selection.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/genetic_algorithm_gui/one_max/one_max.rs" beforeDir="false" afterPath="$PROJECT_DIR$/examples/genetic_algorithm_gui/one_max/one_max.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/genetic_algorithm_gui/problem_settings.rs" beforeDir="false" afterPath="$PROJECT_DIR$/examples/genetic_algorithm_gui/problem_settings.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/genetic_algorithm/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/genetic_algorithm/Cargo.toml" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -57,6 +48,7 @@
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../relm" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="nodejs_package_manager_path" value="npm" />
     <property name="org.rust.cargo.project.model.PROJECT_DISCOVERY" value="true" />
     <property name="org.rust.hideDetachedFileNotificationsC:/Users/goris/CLionProjects/genetic_algorithm/examples/genetic_algorithm_gui/mod.rs" value="true" />
     <property name="org.rust.hideDetachedFileNotificationsC:/Users/goris/CLionProjects/genetic_algorithm/examples/genetic_algorithm_gui/one_max/mod.rs" value="true" />
@@ -204,7 +196,14 @@
       <workItem from="1564013081765" duration="4256000" />
       <workItem from="1564099137063" duration="2854000" />
       <workItem from="1564142087546" duration="17355000" />
-      <workItem from="1564236296929" duration="8769000" />
+      <workItem from="1564236296929" duration="15587000" />
+      <workItem from="1564326501733" duration="5317000" />
+      <workItem from="1564445860964" duration="6574000" />
+      <workItem from="1564534138844" duration="3549000" />
+      <workItem from="1564619506638" duration="601000" />
+      <workItem from="1564702918798" duration="3757000" />
+      <workItem from="1564786712512" duration="2301000" />
+      <workItem from="1564836708519" duration="13735000" />
     </task>
     <servers />
   </component>
