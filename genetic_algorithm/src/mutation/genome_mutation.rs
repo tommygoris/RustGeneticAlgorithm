@@ -114,8 +114,40 @@ impl VecIntegerMutation {
 
 #[cfg(test)]
 mod mutation_test {
+    use crate::genome::fitness_function::FitnessFunction;
     use crate::genome::population::{Individual, Population, ProblemType};
     use crate::mutation::genome_mutation::{Mutate, StringMutation, VecIntegerMutation};
+
+    #[derive(Default, Copy, Clone, Debug)]
+    struct TestStringFitnessFunction;
+    #[derive(Default, Copy, Clone, Debug)]
+    struct TestVecFitnessFunction;
+    impl FitnessFunction for TestStringFitnessFunction {
+        type T = String;
+
+        fn calculate_fitness(&mut self, individual: &String) -> f64 {
+            let mut fitness = 0.0;
+            for char in individual.chars() {
+                if char.eq(&'1') {
+                    fitness += 1.0;
+                }
+            }
+            fitness
+        }
+    }
+
+    impl FitnessFunction for TestVecFitnessFunction {
+        type T = Vec<u32>;
+        fn calculate_fitness(&mut self, individual: &Vec<u32>) -> f64 {
+            let mut fitness = 0.0;
+            for char in individual {
+                if char.eq(&1) {
+                    fitness += 1.0;
+                }
+            }
+            fitness
+        }
+    }
 
     #[test]
     fn test_string_mutation() {
@@ -124,7 +156,7 @@ mod mutation_test {
             2, 3, 4,
         ];
         let possible_candidates = vec!['0', '1'];
-
+        let fitness_function = Box::new(TestStringFitnessFunction::default());
         let mut string_mutation = StringMutation::new(1.0, possible_candidates, *seed);
 
         let individual = Individual::new(String::from("un1111o"), 5.0);
@@ -133,7 +165,7 @@ mod mutation_test {
         let list_of_individuals = vec![individual, individual2];
 
         let mut population = Population::new(list_of_individuals, ProblemType::Max);
-        let new_pop = string_mutation.mutate(&population);
+        let new_pop = string_mutation.mutate(&population, fitness_function);
         assert_eq!(new_pop[0].individual(), &String::from("1110000"));
         assert_eq!(new_pop[1].individual(), &String::from("11101110101"));
     }
@@ -145,7 +177,7 @@ mod mutation_test {
             2, 3, 4,
         ];
         let possible_candidates = vec![2, 3];
-
+        let fitness_function = Box::new(TestVecFitnessFunction::default());
         let mut vec_int_mutation = VecIntegerMutation::new(1.0, possible_candidates, *seed);
 
         let individual = Individual::new(vec![0, 0, 0, 0, 0], 5.0);
@@ -154,7 +186,7 @@ mod mutation_test {
         let list_of_individuals = vec![individual, individual2];
 
         let mut population = Population::new(list_of_individuals, ProblemType::Max);
-        let new_pop = vec_int_mutation.mutate(&population);
+        let new_pop = vec_int_mutation.mutate(&population, fitness_function);
 
         assert_eq!(new_pop[0].individual(), &vec![3, 3, 3, 2, 2]);
         assert_eq!(new_pop[1].individual(), &vec![2, 2, 3, 3, 3]);

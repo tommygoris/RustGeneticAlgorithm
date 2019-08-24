@@ -192,25 +192,58 @@ mod crossover_test {
     use crate::crossover::genome_crossover::Crossover;
     use crate::crossover::genome_crossover::StringCrossover;
     use crate::crossover::genome_crossover::VecIntegerCrossover;
+    use crate::genome::fitness_function::FitnessFunction;
     use crate::genome::population::Individual;
+    #[derive(Default, Copy, Clone, Debug)]
+    struct TestStringFitnessFunction;
+    #[derive(Default, Copy, Clone, Debug)]
+    struct TestVecFitnessFunction;
+    impl FitnessFunction for TestStringFitnessFunction {
+        type T = String;
 
+        fn calculate_fitness(&mut self, individual: &String) -> f64 {
+            let mut fitness = 0.0;
+            for char in individual.chars() {
+                if char.eq(&'1') {
+                    fitness += 1.0;
+                }
+            }
+            fitness
+        }
+    }
+
+    impl FitnessFunction for TestVecFitnessFunction {
+        type T = Vec<u32>;
+        fn calculate_fitness(&mut self, individual: &Vec<u32>) -> f64 {
+            let mut fitness = 0.0;
+            for char in individual {
+                if char.eq(&1) {
+                    fitness += 1.0;
+                }
+            }
+            fitness
+        }
+    }
     #[test]
     fn test_string_crossover() {
         let seed: &[u8; 32] = &[
             1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 3, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1,
             2, 3, 4,
         ];
-
+        let mut fitness_function: Box<dyn FitnessFunction<T = String>> =
+            Box::new(TestStringFitnessFunction::default());
         let individual = Individual::new(String::from("uno"), 5.0);
         let individual2 = Individual::new(String::from("dos"), 5.0);
         let mut string_crossover = StringCrossover::new(1.0, 2, *seed);
-        let individual = string_crossover.crossover(&individual, &individual2);
+        let individual =
+            string_crossover.crossover(&individual, &individual2, &mut fitness_function);
         assert_eq!(individual.individual(), &String::from("uoo"));
 
         let mut string_crossover = StringCrossover::new(1.0, 13, *seed);
         let individual = Individual::new(String::from("10101010101010"), 5.0);
         let individual2 = Individual::new(String::from("01010101010101"), 5.0);
-        let individual = string_crossover.crossover(&individual, &individual2);
+        let individual =
+            string_crossover.crossover(&individual, &individual2, &mut fitness_function);
         assert_eq!(individual.individual(), &String::from("11111111111111"));
         //println!("{}", individual);
     }
@@ -221,17 +254,20 @@ mod crossover_test {
             1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 3, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1,
             2, 3, 4,
         ];
-
+        let mut fitness_function: Box<dyn FitnessFunction<T = String>> =
+            Box::new(TestStringFitnessFunction::default());
         let individual = Individual::new(String::from("uno"), 5.0);
         let individual2 = Individual::new(String::from("dos"), 5.0);
         let mut string_crossover = StringCrossover::new(0.0, 2, *seed);
-        let individual = string_crossover.crossover(&individual, &individual2);
+        let individual =
+            string_crossover.crossover(&individual, &individual2, &mut fitness_function);
         assert_eq!(individual.individual(), &String::from("dos"));
 
         let mut string_crossover = StringCrossover::new(0.0, 13, *seed);
         let individual = Individual::new(String::from("10101010101010"), 5.0);
         let individual2 = Individual::new(String::from("01010101010101"), 5.0);
-        let individual = string_crossover.crossover(&individual, &individual2);
+        let individual =
+            string_crossover.crossover(&individual, &individual2, &mut fitness_function);
         assert_eq!(individual.individual(), &String::from("01010101010101"));
         //println!("{}", individual);
     }
@@ -242,11 +278,14 @@ mod crossover_test {
             1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 3, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1,
             2, 3, 4,
         ];
+        let mut fitness_function: Box<dyn FitnessFunction<T = Vec<u32>>> =
+            Box::new(TestVecFitnessFunction::default());
 
         let mut vec_crossover = VecIntegerCrossover::new(1.0, 2, *seed);
         let individual = Individual::new(vec![1, 2, 3], 5.0);
         let individual2 = Individual::new(vec![4, 5, 6], 5.0);
-        let individual = vec_crossover.crossover(&individual, &individual2);
+        let individual = vec_crossover.crossover(&individual, &individual2, &mut fitness_function);
+
         assert_eq!(individual.individual(), &vec![1, 5, 3]);
     }
 }

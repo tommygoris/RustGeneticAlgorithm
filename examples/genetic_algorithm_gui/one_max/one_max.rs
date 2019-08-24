@@ -60,10 +60,16 @@ impl OneMax {
     pub fn population(&mut self) -> &Option<Population<String>> {
         &self.pop
     }
+
+    pub fn current_gen(&mut self) -> u64 {
+        self.internal_state.current_gen
+    }
 }
 
 impl ProblemSettings for OneMax {
     fn on_start(&mut self) {
+        //        let mut one_max = self.clone();
+        //        let mut one_max_lock = self.clone();
         if let Some(pop) = &mut self.pop {
             info!("old pop");
             step_one(pop.borrow_mut(), &mut self.internal_state);
@@ -76,6 +82,8 @@ impl ProblemSettings for OneMax {
             );
             self.pop = Some(pop);
             step_one(&mut self.pop.clone().unwrap(), &mut self.internal_state)
+        }
+        self.internal_state.current_gen += 1;
     }
 
     fn on_pause(&mut self) {

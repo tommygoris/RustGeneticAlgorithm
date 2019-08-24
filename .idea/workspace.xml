@@ -16,8 +16,9 @@
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/examples/genetic_algorithm_gui/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/examples/genetic_algorithm_gui/main.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/examples/genetic_algorithm_gui/one_max/one_max.rs" beforeDir="false" afterPath="$PROJECT_DIR$/examples/genetic_algorithm_gui/one_max/one_max.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/genetic_algorithm_gui/problem_settings.rs" beforeDir="false" afterPath="$PROJECT_DIR$/examples/genetic_algorithm_gui/problem_settings.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/genetic_algorithm/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/genetic_algorithm/Cargo.toml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/genetic_algorithm/src/crossover/genome_crossover.rs" beforeDir="false" afterPath="$PROJECT_DIR$/genetic_algorithm/src/crossover/genome_crossover.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/genetic_algorithm/src/mutation/genome_mutation.rs" beforeDir="false" afterPath="$PROJECT_DIR$/genetic_algorithm/src/mutation/genome_mutation.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/genetic_algorithm/src/selection/genome_selection.rs" beforeDir="false" afterPath="$PROJECT_DIR$/genetic_algorithm/src/selection/genome_selection.rs" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -43,6 +44,7 @@
   </component>
   <component name="ProjectId" id="1OTsUNu5MMpzehLl4GdUMieqGpk" />
   <component name="PropertiesComponent">
+    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$/../relm" />
@@ -74,10 +76,43 @@
       </list>
     </option>
   </component>
-  <component name="RunManager" selected="Cargo Command.run">
+  <component name="RunManager" selected="Cargo Command.Run genetic_algorithm_gui">
     <configuration name="Run genetic_algorithm_gui" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
       <option name="channel" value="DEFAULT" />
       <option name="command" value="run --package genetic_algorithm --example genetic_algorithm_gui" />
+      <option name="allFeatures" value="false" />
+      <option name="nocapture" value="false" />
+      <option name="emulateTerminal" value="false" />
+      <option name="backtrace" value="SHORT" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <configuration name="Test crossover::genome_crossover::crossover_test::test_string_crossover" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="channel" value="DEFAULT" />
+      <option name="command" value="test --package genetic_algorithm --lib crossover::genome_crossover::crossover_test::test_string_crossover -- --exact" />
+      <option name="allFeatures" value="false" />
+      <option name="nocapture" value="false" />
+      <option name="emulateTerminal" value="false" />
+      <option name="backtrace" value="SHORT" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <configuration name="Test crossover::genome_crossover::crossover_test::test_string_crossover_skip_crossover" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="channel" value="DEFAULT" />
+      <option name="command" value="test --package genetic_algorithm --lib crossover::genome_crossover::crossover_test::test_string_crossover_skip_crossover -- --exact" />
+      <option name="allFeatures" value="false" />
+      <option name="nocapture" value="false" />
+      <option name="emulateTerminal" value="false" />
+      <option name="backtrace" value="SHORT" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <envs />
+      <method v="2" />
+    </configuration>
+    <configuration name="Test selection::genome_selection::selection_test::test_individual_selection" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="channel" value="DEFAULT" />
+      <option name="command" value="test --package genetic_algorithm --lib selection::genome_selection::selection_test::test_individual_selection -- --exact" />
       <option name="allFeatures" value="false" />
       <option name="nocapture" value="false" />
       <option name="emulateTerminal" value="false" />
@@ -94,17 +129,6 @@
       <option name="emulateTerminal" value="false" />
       <option name="backtrace" value="SHORT" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
-      <envs />
-      <method v="2" />
-    </configuration>
-    <configuration name="run [6763ca7]" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="channel" value="DEFAULT" />
-      <option name="command" value="run --package azul --example hot_reload" />
-      <option name="allFeatures" value="false" />
-      <option name="nocapture" value="false" />
-      <option name="emulateTerminal" value="false" />
-      <option name="backtrace" value="SHORT" />
-      <option name="workingDirectory" value="file://$USER_HOME$/.cargo/git/checkouts/azul-f3b1e21a5e685cad/6763ca7" />
       <envs />
       <method v="2" />
     </configuration>
@@ -132,6 +156,10 @@
     </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Cargo Command.Run genetic_algorithm_gui" />
+        <item itemvalue="Cargo Command.Test crossover::genome_crossover::crossover_test::test_string_crossover" />
+        <item itemvalue="Cargo Command.Test crossover::genome_crossover::crossover_test::test_string_crossover_skip_crossover" />
+        <item itemvalue="Cargo Command.Test selection::genome_selection::selection_test::test_individual_selection" />
         <item itemvalue="Cargo Command.run" />
       </list>
     </recent_temporary>
@@ -203,7 +231,22 @@
       <workItem from="1564619506638" duration="601000" />
       <workItem from="1564702918798" duration="3757000" />
       <workItem from="1564786712512" duration="2301000" />
-      <workItem from="1564836708519" duration="13735000" />
+      <workItem from="1564836708519" duration="16028000" />
+      <workItem from="1564925802473" duration="15161000" />
+      <workItem from="1565048040943" duration="4783000" />
+      <workItem from="1565134999876" duration="605000" />
+      <workItem from="1565223341389" duration="1263000" />
+      <workItem from="1565392645753" duration="2726000" />
+      <workItem from="1565447141123" duration="6228000" />
+      <workItem from="1565547808470" duration="5566000" />
+      <workItem from="1565741285441" duration="601000" />
+      <workItem from="1565913847432" duration="1037000" />
+      <workItem from="1565992750850" duration="2686000" />
+      <workItem from="1566050597335" duration="3271000" />
+      <workItem from="1566150065522" duration="202000" />
+      <workItem from="1566150281744" duration="1335000" />
+      <workItem from="1566603380982" duration="205000" />
+      <workItem from="1566603641879" duration="3281000" />
     </task>
     <servers />
   </component>

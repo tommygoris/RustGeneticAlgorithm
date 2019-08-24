@@ -84,8 +84,8 @@ mod selection_test {
             2, 3, 4,
         ];
 
-        let individual = Individual::new(vec![0, 0, 0, 0, 0], 6.0);
-        let individual2 = Individual::new(vec![1, 1, 1, 1, 1], 5.0);
+        let individual = Individual::new(String::from("00000"), 6.0);
+        let individual2 = Individual::new(String::from("11111"), 5.0);
 
         let list_of_individuals = vec![individual, individual2];
 
@@ -95,23 +95,23 @@ mod selection_test {
 
         let individual3 = tournament_selection.select_individual(&population);
 
-        assert_eq!(individual3.individual(), &vec![0, 0, 0, 0, 0]);
+        assert_eq!(individual3.individual(), &String::from("00000"));
 
         let mut tournament_selection = TournamentSelection::new(2, 0.0, *seed);
         let individual3 = tournament_selection.select_individual(&population);
-        assert_eq!(individual3.individual(), &vec![1, 1, 1, 1, 1]);
+        assert_eq!(individual3.individual(), &String::from("11111"));
 
-        let individual = Individual::new(vec![0, 0, 0, 0, 0], 6.0);
-        let individual2 = Individual::new(vec![1, 1, 1, 1, 1], 5.0);
+        let individual = Individual::new(String::from("00000"), 6.0);
+        let individual2 = Individual::new(String::from("11111"), 5.0);
         let list_of_individuals = vec![individual, individual2];
 
         let mut population = Population::new(list_of_individuals, ProblemType::Min);
         let mut tournament_selection = TournamentSelection::new(2, 1.0, *seed);
         let individual3 = tournament_selection.select_individual(&population);
-        assert_eq!(individual3.individual(), &vec![1, 1, 1, 1, 1]);
+        assert_eq!(individual3.individual(), &String::from("11111"));
 
         let mut tournament_selection = TournamentSelection::new(2, 0.0, *seed);
         let individual3 = tournament_selection.select_individual(&population);
-        assert_eq!(individual3.individual(), &vec![0, 0, 0, 0, 0]);
+        assert_eq!(individual3.individual(), &String::from("00000"));
     }
 }

@@ -19,14 +19,20 @@ use log::{info, warn, LevelFilter};
 use glib::GString;
 use gtk::Orientation::{Horizontal, Vertical};
 use gtk::{
-    BoxExt, Button, ButtonExt, ComboBoxExt, ComboBoxTextExt, Container, ContainerExt,
-    EditableSignals, EntryBuilder, EntryExt, Inhibit, Label, LabelExt, RadioButtonExt,
-    ToggleButtonExt, WidgetExt, Window, WindowType,
+    BoxExt, Button, ButtonExt, CellLayoutExt, ComboBoxExt, ComboBoxTextExt, Container,
+    ContainerExt, EditableSignals, EntryBuilder, EntryExt, GtkListStoreExtManual, Inhibit, Label,
+    LabelExt, RadioButtonExt, ScrolledWindowExt, ToggleButtonExt, TreeViewColumnExt, TreeViewExt,
+    WidgetExt, Window, WindowType,
 };
 
-use relm::{EventStream, Relm, Update, Widget, WidgetTest};
+use relm::{Channel, EventStream, Relm, Update, Widget, WidgetTest};
 use sha2::{Digest, Sha256};
 
+use crate::gtk::ListBoxExt;
+use crate::gtk::ScrollableExt;
+use crate::gtk::StaticType;
+use crate::gtk::TextTagTableExt;
+use crate::gtk::TextViewExt;
 use crate::one_max::one_max::OneMax;
 use crate::problem_settings::ProblemSettings;
 use crossbeam_utils::thread::scope;
@@ -40,7 +46,7 @@ use plotters::prelude::*;
 use rand::prelude::*;
 use rand::Rng;
 use std::borrow::{Borrow, BorrowMut};
-use std::convert::TryFrom;
+use std::convert::{TryFrom, TryInto};
 use std::env::args;
 use std::path::PathBuf;
 use std::sync::mpsc::{channel, Receiver, Sender, TryRecvError};
@@ -87,10 +93,11 @@ pub struct Model {
     current_problem: Option<Box<dyn ProblemSettings + Send + Sync>>,
     sender: Option<Sender<()>>,
     mutex_cond: Option<Arc<(Mutex<bool>, Condvar)>>,
+    stream: EventStream<Msg>,
     // selector: Option<Box<SelectIndividual<T = T>>>
 }
 
-#[derive(Copy, Clone, Debug)]
+#[derive(Clone, Debug)]
 enum Msg {
     Quit,
     ProblemChanged,
@@ -103,6 +110,7 @@ enum Msg {
     StartGA,
     ResumeGA,
     PauseGA,
+    CurrentGen(u64, Vec<Individual<String>>),
 }
 
 // Create the structure that holds the widgets used in the view.
@@ -115,7 +123,8 @@ struct Widgets {
     selection_type_combobox: gtk::ComboBoxText,
     radio_buttons: Vec<gtk::RadioButton>,
     seed_entry: gtk::Entry,
-    population_list_box: gtk::ListBox,
+    population_list_box: gtk::TreeView,
+    current_gen_label: gtk::Label,
 }
 
 fn main() {
@@ -141,16 +150,16 @@ fn main() {
 
         (problem_inner_vbox, button)
     }
-    fn create_listbox_box(label_text: &str) -> (gtk::Box, gtk::ListBox) {
+    fn create_listbox_box(label_text: &str) -> (gtk::TreeView) {
         let problem_inner_vbox = gtk::Box::new(Horizontal, 10);
         let problem_type_label = gtk::Label::new(Some(label_text));
 
-        let listbox = gtk::ListBox::new();
+        let tree = create_and_setup_view();
+        //tree.set
+        //problem_inner_vbox.pack_start(&problem_type_label, false, true, 5);
+        //problem_inner_vbox.pack_start(&tree, false, true, 5);
 
-        problem_inner_vbox.pack_start(&problem_type_label, false, true, 5);
-        problem_inner_vbox.pack_start(&listbox, false, true, 5);
-
-        (problem_inner_vbox, listbox)
+        (tree)
     }
     fn create_label_entry_box(
         label_text: &str,
@@ -223,7 +232,7 @@ fn main() {
                 first_radio_button.join_group(Some(&radio_button));
 
                 problem_inner_vbox.pack_start(&radio_button, false, false, 5);
-
+                let msg = msg.clone();
                 let stream = stream.clone();
                 radio_button.connect_clicked(move |_| {
                     stream.emit(msg.clone());
@@ -234,8 +243,54 @@ fn main() {
         }
         (problem_inner_vbox, radio_vector)
     }
-    // Create the view using the normal GTK+ method calls.
-    let outer_vbox = gtk::Box::new(Vertical, 0);
+
+    fn create_and_setup_view() -> gtk::TreeView {
+        // Creating the tree view.
+        let tree = gtk::TreeView::new();
+
+        tree.set_headers_visible(false);
+        // Creating the two columns inside the view.
+        append_column(&tree, 0);
+        append_column(&tree, 1);
+        tree
+    }
+
+    fn create_and_fill_model(data: &Vec<String>) -> gtk::ListStore {
+        // Creation of a model with two rows.
+        let model = gtk::ListStore::new(&[u32::static_type(), String::static_type()]);
+
+        // Filling up the tree view.
+        //let entries = &["Michel", "Sara", "Liam", "Zelda", "Neo", "Octopus master"];
+        for (i, entry) in data.iter().enumerate() {
+            model.insert_with_values(None, &[0, 1], &[&(i as u32 + 1), entry]);
+        }
+        model
+    }
+
+    fn append_column(tree: &gtk::TreeView, id: i32) {
+        let column = gtk::TreeViewColumn::new();
+        let cell = gtk::CellRendererText::new();
+        column.pack_start(&cell, true);
+        // Association of the view's column with the model's `id` column.
+        column.add_attribute(&cell, "text", id);
+        tree.append_column(&column);
+    }
+
+    fn create_label_on_label_box(
+        left_label_text: &str,
+        right_label_text: &str,
+    ) -> (gtk::Box, gtk::Label, gtk::Label) {
+        let label_vbox = gtk::Box::new(Horizontal, 10);
+
+        let left_label = gtk::Label::new(Some(left_label_text));
+
+        let right_label = gtk::Label::new(Some(right_label_text));
+
+        label_vbox.pack_start(&left_label, false, true, 5);
+        label_vbox.pack_start(&right_label, false, true, 5);
+
+        (label_vbox, left_label, right_label)
+    }
 
     let radio_widgets = create_problem_type_radio_group(
         vec!["Max", "Min"],
@@ -278,30 +333,60 @@ fn main() {
         Msg::SeedChanged,
         std::str::from_utf8(DEFAULT_SEED).unwrap(),
     );
-    let population_list_box = create_listbox_box("Population");
+
     let start_button = create_button_box("Start", &main_stream, Msg::StartGA);
     let resume_button = create_button_box("Stop", &main_stream, Msg::PauseGA);
     let stop_button = create_button_box("Resume", &main_stream, Msg::ResumeGA);
 
     start_button.0.pack_start(&resume_button.0, false, false, 5);
     start_button.0.pack_start(&stop_button.0, false, false, 5);
-    outer_vbox.pack_start(&problem_combobox.0, false, false, 5);
-    outer_vbox.pack_start(&population_entry.0, false, false, 5);
-    outer_vbox.pack_start(&crossover_entry.0, false, false, 5);
-    outer_vbox.pack_start(&mutation_entry.0, false, false, 5);
-    outer_vbox.pack_start(&selection_type_combobox.0, false, false, 5);
-    outer_vbox.pack_start(&radio_widgets.0, false, false, 5);
-    outer_vbox.pack_start(&radio_widgets.0, false, false, 5);
-    outer_vbox.pack_start(&seed_entry.0, false, false, 5);
-    outer_vbox.pack_start(&population_list_box.0, false, false, 5);
-    outer_vbox.pack_start(&start_button.0, false, false, 5);
 
-    let ch = outer_vbox.get_children();
+    let left_outer_vbox = gtk::Box::new(Vertical, 0);
+    left_outer_vbox.pack_start(&problem_combobox.0, false, false, 5);
+    left_outer_vbox.pack_start(&population_entry.0, false, false, 5);
+    left_outer_vbox.pack_start(&crossover_entry.0, false, false, 5);
+    left_outer_vbox.pack_start(&mutation_entry.0, false, false, 5);
+    left_outer_vbox.pack_start(&selection_type_combobox.0, false, false, 5);
+    left_outer_vbox.pack_start(&radio_widgets.0, false, false, 5);
+    left_outer_vbox.pack_start(&radio_widgets.0, false, false, 5);
+    left_outer_vbox.pack_start(&seed_entry.0, false, false, 5);
+    left_outer_vbox.pack_start(&start_button.0, false, false, 5);
+
+    let top_level_box = gtk::Box::new(Horizontal, 0);
+    let current_gen_labels = create_label_on_label_box("Current Gen:", "0");
+
+    let population_list_box = create_listbox_box("Population");
+    let inner_level_box = gtk::Box::new(Vertical, 0);
+    let horizontal_adjustment = gtk::Adjustment::new(50.0, 0.0, 50.0, 1.0, 1.0, 500.0);
+    let vertical_adjustment = gtk::Adjustment::new(50.0, 0.0, 50.0, 1.0, 1.0, 500.0);
+
+    //    population_list_box
+    //        .1
+    //        .set_hadjustment(Some(&horizontal_adjustment));
+    //    population_list_box
+    //        .1
+    //        .set_vadjustment(Some(&vertical_adjustment));
+    let scrolled_window_pop_list =
+        gtk::ScrolledWindow::new(Some(&horizontal_adjustment), Some(&vertical_adjustment));
+    scrolled_window_pop_list.add(&population_list_box);
+
+    //scrolled_window_pop_list.set
+    //    population_list_box
+    //        .0
+    //        .pack_start(&scrolled_window_pop_list, false, false, 5);
+
+    //    population_list_box
+    //        .1
+    //        .set_adjustment(Some(&vertical_adjustment));
+    inner_level_box.pack_start(&current_gen_labels.0, false, false, 5);
+    inner_level_box.add(&scrolled_window_pop_list);
 
     let window = Window::new(WindowType::Toplevel);
+    window.set
+    top_level_box.pack_start(&left_outer_vbox, false, false, 5);
+    top_level_box.pack_start(&inner_level_box, false, false, 5);
 
-    window.add(&outer_vbox);
-
+    window.add(&top_level_box);
     window.show_all();
 
     let widgets = Widgets {
@@ -312,7 +397,8 @@ fn main() {
         selection_type_combobox: selection_type_combobox.1,
         radio_buttons: radio_widgets.1,
         seed_entry: seed_entry.1,
-        population_list_box: population_list_box.1,
+        population_list_box,
+        current_gen_label: current_gen_labels.2,
     };
 
     main_stream.observe(move |event: &Msg| {
@@ -338,6 +424,7 @@ fn main() {
         current_problem: None,
         sender: None,
         mutex_cond: None,
+        stream: main_stream.clone(),
     };
 
     fn update(event: Msg, model: &mut Model, widgets: &Widgets) {
@@ -500,18 +587,35 @@ fn main() {
 
                 let steps = model.steps.clone();
 
-                let (tx, rx) = channel();
-                model.sender = Some(tx);
+                //let (tx, rx) = channel();
+                //model.receiver = Some(rx);
                 let pair = Arc::new((Mutex::new(true), Condvar::new()));
                 let pair2 = pair.clone();
+                let stream = model.stream.clone();
+
+                let (channel, sender) =
+                    Channel::new(move |data: (u64, Vec<Individual<String>>)| {
+                        // This closure is executed whenever a message is received from the sender.
+                        // We send a message to the current widget.
+                        stream.emit(Msg::CurrentGen(data.0, data.1));
+                    });
+
                 model.mutex_cond = Some(pair);
                 let handler = thread::spawn(move || {
                     let &(ref lock, ref cvar) = &*pair2;
                     match steps {
                         Step::Inf => loop {
                             one_max.on_start();
-                            let pop = one_max.population();
-
+                            let list_of_indvs = one_max
+                                .population()
+                                .as_ref()
+                                .unwrap()
+                                .list_of_individuals()
+                                .clone();
+                            let current_gen = one_max.current_gen();
+                            sender
+                                .send((current_gen, list_of_indvs.to_vec()))
+                                .expect("send message");
                             let _guard = cvar
                                 .wait_until(lock.lock().unwrap(), |started| *started)
                                 .unwrap();
@@ -537,13 +641,30 @@ fn main() {
                 *started = false;
                 model.mutex_cond.as_ref().unwrap().1.notify_one();
             }
+            Msg::CurrentGen(num, list_of_individuals) => {
+                let label = &widgets.current_gen_label;
+                label.set_text(num.to_string().as_str());
+                let list_widget = &widgets.population_list_box;
+                let mut tree_pop_vec = Vec::new();
+                //                //let text_buffer = gtk::TextBuffer::new();
+                //                for row in list_widget.get_children() {
+                //                    list_widget.remove(&row);
+                //                }
+                //
+                for indv in &list_of_individuals {
+                    let idnv_clone = indv.clone();
+                    tree_pop_vec.push(idnv_clone.to_string());
+                }
+
+                list_widget.set_model(Some(&create_and_fill_model(&tree_pop_vec)));
+                //list_widget.show_all();
+            }
         }
     }
 
     main_stream.set_callback(move |msg| {
         update(msg, &mut model, &widgets);
     });
-
     gtk::main();
 }
 
