@@ -132,9 +132,9 @@ fn init_string_pop(
     let string_len = 100;
 
     let mut population_list = Vec::new();
-
+    let mut seed_gen = SeedableRng::from_seed(seed);
     for _ in 0..pop_size {
-        let new_string_individual = generate_string_individual_one_max(string_len, seed);
+        let new_string_individual = generate_string_individual_one_max(string_len, &mut seed_gen);
         let fitness = one_max_problem.calculate_fitness(&new_string_individual);
         population_list.push(Individual::new(new_string_individual, fitness));
     }
@@ -143,26 +143,13 @@ fn init_string_pop(
     population
 }
 
-fn generate_string_individual_one_max(range: u32, seed: [u8; 32]) -> String {
+fn generate_string_individual_one_max(range: u32, seed_gen: &mut StdRng) -> String {
     let mut new_string_individual = String::new();
     let characters = vec!['0', '1'];
-    let mut seed_gen: StdRng = SeedableRng::from_seed(seed);
+
     for _ in 0..range {
         let location = seed_gen.gen_range(0, characters.len()) as usize;
         new_string_individual.push(characters[location]);
     }
     new_string_individual
 }
-
-//fn one_step(population: &mut Population<String>) {
-//
-//    if (isInitializing) {
-//        let selection = TournamentSelection::new(7,0.80, *seed);
-//        let mut crossover = StringCrossover::new(0.80, 7, *seed);
-//        let mut one_max_problem = OneMax::default();
-//        let mut selection = TournamentSelection::new(7,0.80, *seed);
-//
-//    }
-//    population.crossover(crossover, *selection, fitness_function);
-//    //population.mutate();
-//}

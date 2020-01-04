@@ -9,7 +9,7 @@ pub trait Mutate {
     fn mutate(
         &mut self,
         population: &Population<Self::T>,
-        mut fitness_function: Box<dyn FitnessFunction<T = Self::T>>,
+        fitness_function: Box<dyn FitnessFunction<T = Self::T>>,
     ) -> Vec<Individual<Self::T>>;
 }
 
@@ -24,6 +24,11 @@ pub struct StringMutation {
 pub struct VecIntegerMutation {
     mutation_rate: f64,
     possible_candidates: Vec<u32>,
+    seed: StdRng,
+}
+
+pub struct NeuralNetMutation {
+    mutation_rate: f64,
     seed: StdRng,
 }
 

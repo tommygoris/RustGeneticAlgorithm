@@ -25,10 +25,8 @@ use gtk::{
     WidgetExt, Window, WindowType,
 };
 
-use relm::{Channel, EventStream, Relm, Update, Widget, WidgetTest};
-use sha2::{Digest, Sha256};
-
 use crate::gtk::ListBoxExt;
+use crate::gtk::MenuShellExt;
 use crate::gtk::ScrollableExt;
 use crate::gtk::StaticType;
 use crate::gtk::TextTagTableExt;
@@ -45,6 +43,8 @@ use gio::SocketConnectableExt;
 use plotters::prelude::*;
 use rand::prelude::*;
 use rand::Rng;
+use relm::{Channel, EventStream, Relm, Update, Widget, WidgetTest};
+use sha2::{Digest, Sha256};
 use std::borrow::{Borrow, BorrowMut};
 use std::convert::{TryFrom, TryInto};
 use std::env::args;
@@ -125,6 +125,9 @@ struct Widgets {
     seed_entry: gtk::Entry,
     population_list_box: gtk::TreeView,
     current_gen_label: gtk::Label,
+    start_button: gtk::Button,
+    resume_button: gtk::Button,
+    stop_button: gtk::Button,
 }
 
 fn main() {
@@ -137,10 +140,11 @@ fn main() {
         label_text: &str,
         stream: &EventStream<Msg>,
         msg: Msg,
+        is_sensitive: bool,
     ) -> (gtk::Box, gtk::Button) {
         let problem_inner_vbox = gtk::Box::new(Horizontal, 10);
         let button = gtk::Button::new_with_label(label_text);
-
+        button.set_sensitive(is_sensitive);
         problem_inner_vbox.pack_start(&button, false, true, 5);
 
         let stream = stream.clone();
@@ -253,6 +257,7 @@ fn main() {
         append_column(&tree, 0);
         append_column(&tree, 1);
         tree
+
     }
 
     fn create_and_fill_model(data: &Vec<String>) -> gtk::ListStore {
@@ -334,9 +339,9 @@ fn main() {
         std::str::from_utf8(DEFAULT_SEED).unwrap(),
     );
 
-    let start_button = create_button_box("Start", &main_stream, Msg::StartGA);
-    let resume_button = create_button_box("Stop", &main_stream, Msg::PauseGA);
-    let stop_button = create_button_box("Resume", &main_stream, Msg::ResumeGA);
+    let start_button = create_button_box("Start", &main_stream, Msg::StartGA, true);
+    let resume_button = create_button_box("Stop", &main_stream, Msg::PauseGA, false);
+    let stop_button = create_button_box("Resume", &main_stream, Msg::ResumeGA, false);
 
     start_button.0.pack_start(&resume_button.0, false, false, 5);
     start_button.0.pack_start(&stop_button.0, false, false, 5);
@@ -351,7 +356,7 @@ fn main() {
     left_outer_vbox.pack_start(&radio_widgets.0, false, false, 5);
     left_outer_vbox.pack_start(&seed_entry.0, false, false, 5);
     left_outer_vbox.pack_start(&start_button.0, false, false, 5);
-
+    let top_level_menu_box = gtk::Box::new(Vertical, 0);
     let top_level_box = gtk::Box::new(Horizontal, 0);
     let current_gen_labels = create_label_on_label_box("Current Gen:", "0");
 
@@ -368,8 +373,18 @@ fn main() {
     //        .set_vadjustment(Some(&vertical_adjustment));
     let scrolled_window_pop_list =
         gtk::ScrolledWindow::new(Some(&horizontal_adjustment), Some(&vertical_adjustment));
+    //    let scrolled_window_pop_list = gtk::ScrolledWindowBuilder::new()
+    //        .max_content_height(500)
+    //        .max_content_width(500)
+    //        .hadjustment(&horizontal_adjustment)
+    //        .vadjustment(&vertical_adjustment)
+    //        .build();
     scrolled_window_pop_list.add(&population_list_box);
-
+    //scrolled_window_pop_list.set_kinetic_scrolling(true);
+    //    scrolled_window_pop_list.set_max_content_width(1);
+    //    scrolled_window_pop_list.set_max_content_height(3000);
+    scrolled_window_pop_list.set_min_content_width(500);
+    scrolled_window_pop_list.set_min_content_height(500);
     //scrolled_window_pop_list.set
     //    population_list_box
     //        .0
@@ -382,11 +397,16 @@ fn main() {
     inner_level_box.add(&scrolled_window_pop_list);
 
     let window = Window::new(WindowType::Toplevel);
-    window.set
+    let menu_model = gtk::MenuItem::new_with_label("File");
+    let menu = gtk::MenuBar::new();
+    menu.append(&menu_model);
+    //top_level_box.pack_start(&menu, false, false, 5);
     top_level_box.pack_start(&left_outer_vbox, false, false, 5);
     top_level_box.pack_start(&inner_level_box, false, false, 5);
+    top_level_menu_box.pack_start(&menu, false, false, 0);
+    top_level_menu_box.pack_start(&top_level_box, false, false, 0);
 
-    window.add(&top_level_box);
+    window.add(&top_level_menu_box);
     window.show_all();
 
     let widgets = Widgets {
@@ -399,6 +419,9 @@ fn main() {
         seed_entry: seed_entry.1,
         population_list_box,
         current_gen_label: current_gen_labels.2,
+        start_button: start_button.1,
+        resume_button: resume_button.1,
+        stop_button: stop_button.1,
     };
 
     main_stream.observe(move |event: &Msg| {
@@ -563,6 +586,9 @@ fn main() {
                 let selection_combobox_option =
                     &widgets.selection_type_combobox.get_active_text().unwrap();
                 let problem_combobox_option = &widgets.problem_combobox.get_active_text().unwrap();
+                &widgets.start_button.set_sensitive(false);
+                &widgets.resume_button.set_sensitive(true);
+                &widgets.stop_button.set_sensitive(true);
 
                 let mut selector =
                     TournamentSelection::new(DEFAULT_K_VALUE, DEFAULT_ELITIST_VALUE, model.seed);
@@ -587,16 +613,13 @@ fn main() {
 
                 let steps = model.steps.clone();
 
-                //let (tx, rx) = channel();
-                //model.receiver = Some(rx);
+
                 let pair = Arc::new((Mutex::new(true), Condvar::new()));
                 let pair2 = pair.clone();
                 let stream = model.stream.clone();
 
                 let (channel, sender) =
                     Channel::new(move |data: (u64, Vec<Individual<String>>)| {
-                        // This closure is executed whenever a message is received from the sender.
-                        // We send a message to the current widget.
                         stream.emit(Msg::CurrentGen(data.0, data.1));
                     });
 

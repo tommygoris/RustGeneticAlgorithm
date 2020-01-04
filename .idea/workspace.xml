@@ -12,15 +12,18 @@
     <cargoProject FILE="$PROJECT_DIR$/Cargo.toml" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="5fe25c1d-23ae-4568-95fb-10b82f2ab22c" name="Default Changelist" comment="">
+    <list default="true" id="5e64fd03-db15-4a28-be4c-1bf9056ce88b" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/genetic_algorithm/src/neural_network/mod.rs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/genetic_algorithm/src/neural_network/neural_network.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/genetic_algorithm.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/genetic_algorithm.iml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/examples/genetic_algorithm_gui/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/examples/genetic_algorithm_gui/main.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/examples/genetic_algorithm_gui/one_max/one_max.rs" beforeDir="false" afterPath="$PROJECT_DIR$/examples/genetic_algorithm_gui/one_max/one_max.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/genetic_algorithm/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/genetic_algorithm/Cargo.toml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/genetic_algorithm/src/crossover/genome_crossover.rs" beforeDir="false" afterPath="$PROJECT_DIR$/genetic_algorithm/src/crossover/genome_crossover.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/genetic_algorithm/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/genetic_algorithm/src/lib.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/genetic_algorithm/src/mutation/genome_mutation.rs" beforeDir="false" afterPath="$PROJECT_DIR$/genetic_algorithm/src/mutation/genome_mutation.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/genetic_algorithm/src/selection/genome_selection.rs" beforeDir="false" afterPath="$PROJECT_DIR$/genetic_algorithm/src/selection/genome_selection.rs" afterDir="false" />
     </list>
-    <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -40,41 +43,20 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="MacroExpansionManager">
-    <option name="directoryName" value="uQZqXDGK" />
+    <option name="directoryName" value="PxdiQmKb" />
   </component>
-  <component name="ProjectId" id="1OTsUNu5MMpzehLl4GdUMieqGpk" />
+  <component name="ProjectId" id="1Swd4yjqwt35rZ4KOJmVGvqLsq4" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showExcludedFiles" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
   <component name="PropertiesComponent">
-    <property name="ASKED_ADD_EXTERNAL_FILES" value="true" />
-    <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../relm" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
-    <property name="nodejs_package_manager_path" value="npm" />
     <property name="org.rust.cargo.project.model.PROJECT_DISCOVERY" value="true" />
-    <property name="org.rust.hideDetachedFileNotificationsC:/Users/goris/CLionProjects/genetic_algorithm/examples/genetic_algorithm_gui/mod.rs" value="true" />
-    <property name="org.rust.hideDetachedFileNotificationsC:/Users/goris/CLionProjects/genetic_algorithm/examples/genetic_algorithm_gui/one_max/mod.rs" value="true" />
-    <property name="org.rust.hideDetachedFileNotificationsC:/Users/goris/CLionProjects/genetic_algorithm/examples/genetic_algorithm_gui/problems/mod.rs" value="true" />
-    <property name="org.rust.hideDetachedFileNotificationsC:/Users/goris/CLionProjects/genetic_algorithm/examples/genetic_algorithm_gui/problems/one_max/mod.rs" value="true" />
-    <property name="org.rust.hideDetachedFileNotificationsC:/Users/goris/CLionProjects/genetic_algorithm/examples/genetic_algorithm_gui/problems/one_max/one_max.rs" value="true" />
-    <property name="settings.editor.selected.configurable" value="preferences.pluginManager" />
-  </component>
-  <component name="RecentsManager">
-    <key name="MoveFile.RECENT_KEYS">
-      <recent name="C:\Users\goris\CLionProjects\genetic_algorithm\examples\genetic_algorithm_gui" />
-    </key>
-  </component>
-  <component name="RunDashboard">
-    <option name="ruleStates">
-      <list>
-        <RuleState>
-          <option name="name" value="ConfigurationTypeDashboardGroupingRule" />
-        </RuleState>
-        <RuleState>
-          <option name="name" value="StatusDashboardGroupingRule" />
-        </RuleState>
-      </list>
-    </option>
   </component>
   <component name="RunManager" selected="Cargo Command.Run genetic_algorithm_gui">
     <configuration name="Run genetic_algorithm_gui" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
@@ -86,7 +68,9 @@
       <option name="backtrace" value="SHORT" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <envs />
-      <method v="2" />
+      <method v="2">
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+      </method>
     </configuration>
     <configuration name="Test crossover::genome_crossover::crossover_test::test_string_crossover" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
       <option name="channel" value="DEFAULT" />
@@ -97,167 +81,62 @@
       <option name="backtrace" value="SHORT" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
       <envs />
-      <method v="2" />
+      <method v="2">
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+      </method>
     </configuration>
-    <configuration name="Test crossover::genome_crossover::crossover_test::test_string_crossover_skip_crossover" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="channel" value="DEFAULT" />
-      <option name="command" value="test --package genetic_algorithm --lib crossover::genome_crossover::crossover_test::test_string_crossover_skip_crossover -- --exact" />
-      <option name="allFeatures" value="false" />
-      <option name="nocapture" value="false" />
-      <option name="emulateTerminal" value="false" />
-      <option name="backtrace" value="SHORT" />
-      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
-      <envs />
-      <method v="2" />
-    </configuration>
-    <configuration name="Test selection::genome_selection::selection_test::test_individual_selection" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="channel" value="DEFAULT" />
-      <option name="command" value="test --package genetic_algorithm --lib selection::genome_selection::selection_test::test_individual_selection -- --exact" />
-      <option name="allFeatures" value="false" />
-      <option name="nocapture" value="false" />
-      <option name="emulateTerminal" value="false" />
-      <option name="backtrace" value="SHORT" />
-      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
-      <envs />
-      <method v="2" />
-    </configuration>
-    <configuration name="clean" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
-      <option name="channel" value="DEFAULT" />
-      <option name="command" value="clean" />
-      <option name="allFeatures" value="false" />
-      <option name="nocapture" value="false" />
-      <option name="emulateTerminal" value="false" />
-      <option name="backtrace" value="SHORT" />
-      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
-      <envs />
-      <method v="2" />
-    </configuration>
-    <configuration name="run example" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
-      <option name="channel" value="NIGHTLY" />
-      <option name="command" value="run --example genetic_algorithm_gui" />
-      <option name="allFeatures" value="false" />
-      <option name="nocapture" value="false" />
-      <option name="emulateTerminal" value="false" />
-      <option name="backtrace" value="SHORT" />
-      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
-      <envs />
-      <method v="2" />
-    </configuration>
-    <configuration name="run" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="channel" value="DEFAULT" />
-      <option name="command" value="run --package genetic_algorithm --example genetic_algorithm_gui" />
-      <option name="allFeatures" value="false" />
-      <option name="nocapture" value="false" />
-      <option name="emulateTerminal" value="false" />
-      <option name="backtrace" value="SHORT" />
-      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
-      <envs />
-      <method v="2" />
-    </configuration>
+    <list>
+      <item itemvalue="Cargo Command.Run genetic_algorithm_gui" />
+      <item itemvalue="Cargo Command.Test crossover::genome_crossover::crossover_test::test_string_crossover" />
+    </list>
     <recent_temporary>
       <list>
         <item itemvalue="Cargo Command.Run genetic_algorithm_gui" />
         <item itemvalue="Cargo Command.Test crossover::genome_crossover::crossover_test::test_string_crossover" />
-        <item itemvalue="Cargo Command.Test crossover::genome_crossover::crossover_test::test_string_crossover_skip_crossover" />
-        <item itemvalue="Cargo Command.Test selection::genome_selection::selection_test::test_individual_selection" />
-        <item itemvalue="Cargo Command.run" />
       </list>
     </recent_temporary>
   </component>
   <component name="RustProjectSettings">
-    <option name="runRustfmtOnSave" value="true" />
     <option name="toolchainHomeDirectory" value="$USER_HOME$/.cargo/bin" />
     <option name="version" value="2" />
+  </component>
+  <component name="ServiceViewManager">
+    <option name="viewStates">
+      <list>
+        <serviceView>
+          <treeState>
+            <expand />
+            <select />
+          </treeState>
+        </serviceView>
+      </list>
+    </option>
   </component>
   <component name="SvnConfiguration">
     <configuration />
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">
-      <changelist id="5fe25c1d-23ae-4568-95fb-10b82f2ab22c" name="Default Changelist" comment="" />
-      <created>1561850199631</created>
+      <changelist id="5e64fd03-db15-4a28-be4c-1bf9056ce88b" name="Default Changelist" comment="" />
+      <created>1572478404698</created>
       <option name="number" value="Default" />
       <option name="presentableId" value="Default" />
-      <updated>1561850199631</updated>
-      <workItem from="1561850200948" duration="537000" />
-      <workItem from="1561850755626" duration="401000" />
-      <workItem from="1561852989197" duration="1327000" />
-      <workItem from="1562375957876" duration="2328000" />
-      <workItem from="1562380589631" duration="337000" />
-      <workItem from="1562380942122" duration="55000" />
-      <workItem from="1562381013856" duration="923000" />
-      <workItem from="1562382582829" duration="333000" />
-      <workItem from="1562382931001" duration="1433000" />
-      <workItem from="1562385459290" duration="205000" />
-      <workItem from="1562389221252" duration="478000" />
-      <workItem from="1562513701575" duration="33000" />
-      <workItem from="1562967302921" duration="2178000" />
-      <workItem from="1562970337707" duration="3419000" />
-      <workItem from="1562977066028" duration="789000" />
-      <workItem from="1562979735309" duration="754000" />
-      <workItem from="1562982112515" duration="2268000" />
-      <workItem from="1562985187905" duration="304000" />
-      <workItem from="1562985513464" duration="54000" />
-      <workItem from="1562985655391" duration="688000" />
-      <workItem from="1562986392400" duration="173000" />
-      <workItem from="1562986640869" duration="206000" />
-      <workItem from="1562986946084" duration="75000" />
-      <workItem from="1562987047181" duration="83000" />
-      <workItem from="1562987161605" duration="2000" />
-      <workItem from="1562987194504" duration="566000" />
-      <workItem from="1562987911199" duration="1645000" />
-      <workItem from="1562990784966" duration="334000" />
-      <workItem from="1562991263154" duration="2118000" />
-      <workItem from="1563028086955" duration="16528000" />
-      <workItem from="1563060931117" duration="6419000" />
-      <workItem from="1563071203705" duration="4917000" />
-      <workItem from="1563115405799" duration="26365000" />
-      <workItem from="1563325315463" duration="2951000" />
-      <workItem from="1563409948537" duration="5160000" />
-      <workItem from="1563496634448" duration="1470000" />
-      <workItem from="1563571731823" duration="5892000" />
-      <workItem from="1563631085427" duration="20579000" />
-      <workItem from="1563720506786" duration="8712000" />
-      <workItem from="1563838897292" duration="614000" />
-      <workItem from="1564012647131" duration="86000" />
-      <workItem from="1564012942088" duration="89000" />
-      <workItem from="1564013081765" duration="4256000" />
-      <workItem from="1564099137063" duration="2854000" />
-      <workItem from="1564142087546" duration="17355000" />
-      <workItem from="1564236296929" duration="15587000" />
-      <workItem from="1564326501733" duration="5317000" />
-      <workItem from="1564445860964" duration="6574000" />
-      <workItem from="1564534138844" duration="3549000" />
-      <workItem from="1564619506638" duration="601000" />
-      <workItem from="1564702918798" duration="3757000" />
-      <workItem from="1564786712512" duration="2301000" />
-      <workItem from="1564836708519" duration="16028000" />
-      <workItem from="1564925802473" duration="15161000" />
-      <workItem from="1565048040943" duration="4783000" />
-      <workItem from="1565134999876" duration="605000" />
-      <workItem from="1565223341389" duration="1263000" />
-      <workItem from="1565392645753" duration="2726000" />
-      <workItem from="1565447141123" duration="6228000" />
-      <workItem from="1565547808470" duration="5566000" />
-      <workItem from="1565741285441" duration="601000" />
-      <workItem from="1565913847432" duration="1037000" />
-      <workItem from="1565992750850" duration="2686000" />
-      <workItem from="1566050597335" duration="3271000" />
-      <workItem from="1566150065522" duration="202000" />
-      <workItem from="1566150281744" duration="1335000" />
-      <workItem from="1566603380982" duration="205000" />
-      <workItem from="1566603641879" duration="3281000" />
+      <updated>1572478404698</updated>
+      <workItem from="1572478405911" duration="5000" />
+      <workItem from="1572478423620" duration="1457000" />
+      <workItem from="1573081242336" duration="2957000" />
+      <workItem from="1573261710937" duration="601000" />
+      <workItem from="1573262331866" duration="601000" />
+      <workItem from="1573931214148" duration="917000" />
+      <workItem from="1574217565554" duration="584000" />
+      <workItem from="1574513520829" duration="4775000" />
+      <workItem from="1574602324659" duration="1579000" />
+      <workItem from="1574605095042" duration="603000" />
+      <workItem from="1578012231275" duration="1555000" />
+      <workItem from="1578018873054" duration="6478000" />
+      <workItem from="1578072297665" duration="9254000" />
     </task>
     <servers />
-  </component>
-  <component name="TodoView">
-    <todo-panel id="selected-file">
-      <is-autoscroll-to-source value="true" />
-    </todo-panel>
-    <todo-panel id="all">
-      <are-packages-shown value="true" />
-      <is-autoscroll-to-source value="true" />
-    </todo-panel>
   </component>
   <component name="TypeScriptGeneratedFilesManager">
     <option name="version" value="1" />
@@ -274,5 +153,35 @@
         </entry>
       </map>
     </option>
+  </component>
+  <component name="WindowStateProjectService">
+    <state x="414" y="176" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1578019192530">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="414" y="176" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040/1920.-26.1920.1040@0.0.1920.1040" timestamp="1578019192530" />
+    <state width="1877" height="217" key="GridCell.Tab.0.bottom" timestamp="1578105335703">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="217" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.-26.1920.1040@0.0.1920.1040" timestamp="1578105335703" />
+    <state width="1877" height="217" key="GridCell.Tab.0.center" timestamp="1578105335703">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="217" key="GridCell.Tab.0.center/0.0.1920.1040/1920.-26.1920.1040@0.0.1920.1040" timestamp="1578105335703" />
+    <state width="1877" height="217" key="GridCell.Tab.0.left" timestamp="1578105335703">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="217" key="GridCell.Tab.0.left/0.0.1920.1040/1920.-26.1920.1040@0.0.1920.1040" timestamp="1578105335703" />
+    <state width="1877" height="217" key="GridCell.Tab.0.right" timestamp="1578105335703">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="217" key="GridCell.Tab.0.right/0.0.1920.1040/1920.-26.1920.1040@0.0.1920.1040" timestamp="1578105335703" />
+    <state x="656" y="345" key="com.intellij.ide.util.TipDialog" timestamp="1578072305584">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="656" y="345" key="com.intellij.ide.util.TipDialog/0.0.1920.1040/1920.-26.1920.1040@0.0.1920.1040" timestamp="1578072305584" />
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1578073613954">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040/1920.-26.1920.1040@0.0.1920.1040" timestamp="1578073613954" />
   </component>
 </project>

@@ -32,6 +32,10 @@ pub struct VecIntegerCrossover {
     seed: StdRng,
 }
 
+pub struct NeuralNetCrossover {
+    crossover_rate: f64,
+}
+
 impl Crossover for StringCrossover {
     type T = String;
 
@@ -45,7 +49,7 @@ impl Crossover for StringCrossover {
 
         if gen_number < self.crossover_rate {
             let len_of_individual = &_first_individual.individual().to_string().chars().count();
-
+            println!("start parent 1: {:?}, start parent 2: {:?}", _first_individual, _second_individual);
             if len_of_individual <= &usize::try_from(self.crossover_points).unwrap() {
                 panic!(
                     "Please make your crossover points less than the problem length.
@@ -77,6 +81,7 @@ impl Crossover for StringCrossover {
             }
             let new_fitness = fitness_function.calculate_fitness(&new_string_individual);
             let new_individual = Individual::new(new_string_individual, new_fitness);
+            println!("resulting child: {:?}", new_individual.clone());
             return new_individual;
         }
 
@@ -184,6 +189,7 @@ fn get_crossover_locations(
     let length_of_problem = u32::try_from(*length_of_problem).unwrap();
     point_locations.push(length_of_problem);
     point_locations.sort();
+    dbg!(point_locations.clone());
     point_locations
 }
 
