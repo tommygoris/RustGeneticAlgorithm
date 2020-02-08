@@ -1,9 +1,4 @@
-#![feature(wait_until)]
 extern crate gtk;
-#[macro_use]
-extern crate relm;
-#[macro_use]
-extern crate relm_derive;
 #[cfg_attr(test, macro_use)]
 extern crate sha2;
 extern crate simple_logging;
@@ -163,7 +158,7 @@ fn main() {
         //problem_inner_vbox.pack_start(&problem_type_label, false, true, 5);
         //problem_inner_vbox.pack_start(&tree, false, true, 5);
 
-        (tree)
+        tree
     }
     fn create_label_entry_box(
         label_text: &str,
@@ -257,7 +252,6 @@ fn main() {
         append_column(&tree, 0);
         append_column(&tree, 1);
         tree
-
     }
 
     fn create_and_fill_model(data: &Vec<String>) -> gtk::ListStore {
@@ -613,8 +607,7 @@ fn main() {
 
                 let steps = model.steps.clone();
 
-
-                let pair = Arc::new((Mutex::new(true), Condvar::new()));
+                let pair = Arc::new((Mutex::new(false), Condvar::new()));
                 let pair2 = pair.clone();
                 let stream = model.stream.clone();
 
@@ -640,14 +633,14 @@ fn main() {
                                 .send((current_gen, list_of_indvs.to_vec()))
                                 .expect("send message");
                             let _guard = cvar
-                                .wait_until(lock.lock().unwrap(), |started| *started)
+                                .wait_while(lock.lock().unwrap(), |started| *started)
                                 .unwrap();
                         },
                         Step::Steps(num_step) => {
                             for _ in 0..num_step {
                                 one_max.on_start();
                                 let _guard = cvar
-                                    .wait_until(lock.lock().unwrap(), |started| *started)
+                                    .wait_while(lock.lock().unwrap(), |started| *started)
                                     .unwrap();
                             }
                         }
@@ -656,12 +649,12 @@ fn main() {
             }
             Msg::ResumeGA => {
                 let mut started = model.mutex_cond.as_ref().unwrap().0.lock().unwrap();
-                *started = true;
+                *started = false;
                 model.mutex_cond.as_ref().unwrap().1.notify_one();
             }
             Msg::PauseGA => {
                 let mut started = model.mutex_cond.as_ref().unwrap().0.lock().unwrap();
-                *started = false;
+                *started = true;
                 model.mutex_cond.as_ref().unwrap().1.notify_one();
             }
             Msg::CurrentGen(num, list_of_individuals) => {
