@@ -95,11 +95,11 @@ mod selection_test {
 
         let individual3 = tournament_selection.select_individual(&population);
 
-        assert_eq!(individual3.individual(), &String::from("00000"));
+        assert_eq!(individual3.retrieve_individual(), &String::from("00000"));
 
         let mut tournament_selection = TournamentSelection::new(2, 0.0, *seed);
         let individual3 = tournament_selection.select_individual(&population);
-        assert_eq!(individual3.individual(), &String::from("11111"));
+        assert_eq!(individual3.retrieve_individual(), &String::from("11111"));
 
         let individual = Individual::new(String::from("00000"), 6.0);
         let individual2 = Individual::new(String::from("11111"), 5.0);
@@ -108,10 +108,10 @@ mod selection_test {
         let mut population = Population::new(list_of_individuals, ProblemType::Min);
         let mut tournament_selection = TournamentSelection::new(2, 1.0, *seed);
         let individual3 = tournament_selection.select_individual(&population);
-        assert_eq!(individual3.individual(), &String::from("11111"));
+        assert_eq!(individual3.retrieve_individual(), &String::from("11111"));
 
         let mut tournament_selection = TournamentSelection::new(2, 0.0, *seed);
         let individual3 = tournament_selection.select_individual(&population);
-        assert_eq!(individual3.individual(), &String::from("00000"));
+        assert_eq!(individual3.retrieve_individual(), &String::from("00000"));
     }
 }

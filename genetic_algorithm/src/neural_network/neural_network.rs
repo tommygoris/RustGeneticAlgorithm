@@ -4,17 +4,16 @@ use rand::{Rng, SeedableRng};
 use std::borrow::Borrow;
 use std::convert::TryFrom;
 
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 pub struct NeuralNetwork {
     inputs: Vec<NeuralNode>,
     hidden: Vec<Vec<NeuralNode>>,
     outputs: Vec<NeuralNode>,
     bias: Vec<Vec<NeuralNode>>,
-    num_inputs: u32,
     seed: StdRng,
 }
 
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 struct NeuralNode {
     node_val: f64,
     connection_weights: Vec<f64>,
@@ -29,6 +28,63 @@ impl NeuralNode {
 }
 
 impl NeuralNetwork {
+    pub fn hidden_layer_length(&self) -> usize {
+        self.hidden.len()
+    }
+    pub fn has_hidden_layer(&self) -> bool {
+        self.hidden.len() != 0
+    }
+    pub fn add_hidden_node(&mut self, layer_index: usize) {
+        let number_of_conn_weights = if self.hidden.len() - 1 == layer_index {
+            self.outputs.len()
+        } else {
+            self.hidden[layer_index + 1].len()
+        };
+
+        let mut weights = Vec::new();
+
+        for _ in 0..number_of_conn_weights {
+            weights.push(self.seed.gen::<f64>());
+        }
+
+        self.hidden[layer_index].push(NeuralNode::new(1.0, weights));
+
+        if layer_index == 0 {
+            for nodes in self.inputs.iter_mut() {
+                nodes.connection_weights.push(self.seed.gen::<f64>());
+            }
+        } else {
+            for nodes in self.hidden[layer_index - 1].iter_mut() {
+                nodes.connection_weights.push(self.seed.gen::<f64>());
+            }
+        }
+
+        for nodes in self.bias[layer_index].iter_mut() {
+            nodes.connection_weights.push(self.seed.gen::<f64>());
+        }
+    }
+
+    pub fn add_hidden_node_with_new_layer_at_end(&mut self) {
+        let mut new_layer = Vec::new();
+
+        let mut weights = Vec::new();
+        for _ in 0..self.outputs.len() {
+            weights.push(self.seed.gen::<f64>());
+        }
+        new_layer.push(NeuralNode::new(1.0, weights));
+
+        self.hidden.push(new_layer);
+        if self.hidden.len() > 1 {
+            let layer_before_index = self.hidden.len() - 2;
+            for nodes in self.hidden[layer_before_index].iter_mut() {
+                nodes.connection_weights.push(self.seed.gen::<f64>());
+            }
+        } else {
+            for nodes in self.inputs.iter_mut() {
+                nodes.connection_weights.push(self.seed.gen::<f64>());
+            }
+        }
+    }
     pub fn new(
         num_inputs: u32,
         hidden: &[u32],
@@ -103,15 +159,14 @@ impl NeuralNetwork {
             hidden: hidden_layer,
             outputs: output_layer,
             bias: bias_layer,
-            num_inputs,
             seed: rng,
         }
     }
     pub fn feedforward(&self, inputs: &[f64]) -> Vec<f64> {
         let mut layer_output: Vec<f64> = vec![0.0; self.inputs[0].connection_weights.len()];
-        for input_node in self.inputs.iter() {
+        for (input_index, input_node) in self.inputs.iter().enumerate() {
             for (index, weights) in input_node.connection_weights.iter().enumerate() {
-                layer_output[index] += inputs[index] * weights;
+                layer_output[index] += inputs[input_index] * weights;
             }
         }
 
@@ -125,8 +180,9 @@ impl NeuralNetwork {
                 for index in 0..layer_output.len() {
                     layer_output[index] = sigmoid(layer_output[index].borrow());
                 }
+
                 let mut next_layer_output: Vec<f64> =
-                    vec![0.0; hidden_layer[hidden_layer_index].connection_weights.len()];
+                    vec![0.0; hidden_layer[0].connection_weights.len()];
                 for (hidden_node_index, hidden_node) in hidden_layer.iter().enumerate() {
                     for (weight_index, weights) in hidden_node.connection_weights.iter().enumerate()
                     {
@@ -233,7 +289,7 @@ mod neural_network_test {
         let data: [f64; 1] = [1.0];
         let net = NeuralNetwork::new(5, xs.as_ref(), data.as_ref(), *DEFAULT_SEED);
 
-        assert_eq!(net.num_inputs, 5);
+        assert_eq!(net.inputs.len(), 5);
         assert_eq!(net.outputs.len(), 1);
         assert_eq!(net.bias.len(), 5);
         assert_eq!(net.bias[0].len(), 1);
@@ -265,7 +321,7 @@ mod neural_network_test {
         let xs: [u32; 0] = [];
         let data: [f64; 2] = [1.0, 1.0];
         let net = NeuralNetwork::new(5, xs.as_ref(), data.as_ref(), *DEFAULT_SEED);
-        assert_eq!(net.num_inputs, 5);
+        assert_eq!(net.inputs.len(), 5);
         assert_eq!(net.outputs.len(), 2);
         assert_eq!(net.bias.len(), 0);
         assert_eq!(net.hidden.len(), 0);
@@ -287,5 +343,61 @@ mod neural_network_test {
 
         output = net.feedforward(inputs.as_ref());
         assert_eq!(output[0], 0.6035386944499268);
+
+        let xs: [u32; 5] = [10, 10, 10, 10, 10];
+        let data: [f64; 1] = [1.0];
+        let net = NeuralNetwork::new(1, xs.as_ref(), data.as_ref(), *DEFAULT_SEED);
+        let inputs = [0.10];
+
+        let mut output = net.feedforward(inputs.as_ref());
+
+        output = net.feedforward(inputs.as_ref());
+        assert_eq!(output[0], 0.9853877237938057);
     }
+
+    #[test]
+    fn network_add_node() {
+        let xs: [u32; 1] = [1];
+        let data: [f64; 1] = [1.0];
+        let mut net = NeuralNetwork::new(1, xs.as_ref(), data.as_ref(), *DEFAULT_SEED);
+
+        assert_eq!(net.hidden.len(), 1);
+        assert_eq!(net.hidden[0].len(), 1);
+        assert_eq!(net.inputs[0].connection_weights.len(), 1);
+        assert_eq!(net.bias[0][0].connection_weights.len(), 1);
+
+        net.add_hidden_node(0);
+
+        assert_eq!(net.hidden[0].len(), 2);
+        assert_eq!(net.inputs[0].connection_weights.len(), 2);
+        assert_eq!(net.hidden[0][1].connection_weights.len(), 1);
+        assert_eq!(net.bias[0][0].connection_weights.len(), 2);
+
+        net.add_hidden_node(0);
+
+        assert_eq!(net.hidden[0].len(), 3);
+        assert_eq!(net.inputs[0].connection_weights.len(), 3);
+        assert_eq!(net.hidden[0][2].connection_weights.len(), 1);
+        assert_eq!(net.bias[0][0].connection_weights.len(), 3);
+
+        let xs: [u32; 2] = [2, 2];
+        let data: [f64; 1] = [1.0];
+        let mut net = NeuralNetwork::new(1, xs.as_ref(), data.as_ref(), *DEFAULT_SEED);
+
+        assert_eq!(net.hidden[0].len(), 2);
+        assert_eq!(net.inputs[0].connection_weights.len(), 2);
+        assert_eq!(net.hidden[0][1].connection_weights.len(), 2);
+        assert_eq!(net.bias[0][0].connection_weights.len(), 2);
+
+        net.add_hidden_node(1);
+
+        assert_eq!(net.hidden[0].len(), 2);
+        assert_eq!(net.hidden[1].len(), 3);
+        assert_eq!(net.hidden[0][1].connection_weights.len(), 3);
+        assert_eq!(net.hidden[1][1].connection_weights.len(), 1);
+        assert_eq!(net.bias[1][0].connection_weights.len(), 3);
+    }
+
+    #[test]
+    fn network_add_node_with_new_layer() {}
 }

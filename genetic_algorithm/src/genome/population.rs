@@ -23,7 +23,7 @@ impl<T> Individual<T> {
         }
     }
 
-    pub fn individual(&self) -> &T {
+    pub fn retrieve_individual(&self) -> &T {
         &self.individual
     }
 

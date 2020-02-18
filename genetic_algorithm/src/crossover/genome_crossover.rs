@@ -48,8 +48,15 @@ impl Crossover for StringCrossover {
         let gen_number = self.seed.gen::<f64>();
 
         if gen_number < self.crossover_rate {
-            let len_of_individual = &_first_individual.individual().to_string().chars().count();
-            println!("start parent 1: {:?}, start parent 2: {:?}", _first_individual, _second_individual);
+            let len_of_individual = &_first_individual
+                .retrieve_individual()
+                .to_string()
+                .chars()
+                .count();
+            println!(
+                "start parent 1: {:?}, start parent 2: {:?}",
+                _first_individual, _second_individual
+            );
             if len_of_individual <= &usize::try_from(self.crossover_points).unwrap() {
                 panic!(
                     "Please make your crossover points less than the problem length.
@@ -71,11 +78,13 @@ impl Crossover for StringCrossover {
                 let location = usize::try_from(location).unwrap();
 
                 if index % 2 == 0 {
-                    new_string_individual
-                        .push_str(&_first_individual.individual().to_string()[previous..location])
+                    new_string_individual.push_str(
+                        &_first_individual.retrieve_individual().to_string()[previous..location],
+                    )
                 } else {
-                    new_string_individual
-                        .push_str(&_second_individual.individual().to_string()[previous..location])
+                    new_string_individual.push_str(
+                        &_second_individual.retrieve_individual().to_string()[previous..location],
+                    )
                 }
                 previous = location;
             }
@@ -117,7 +126,7 @@ impl Crossover for VecIntegerCrossover {
         let gen_number = self.seed.gen::<f64>();
 
         if gen_number < self.crossover_rate {
-            let len_of_individual = &_first_individual.individual().len();
+            let len_of_individual = &_first_individual.retrieve_individual().len();
 
             if len_of_individual <= &usize::try_from(self.crossover_points).unwrap() {
                 panic!(
@@ -139,11 +148,13 @@ impl Crossover for VecIntegerCrossover {
             for (index, &location) in points.iter().enumerate() {
                 let location = usize::try_from(location).unwrap();
                 if index % 2 == 0 {
-                    new_vec_individual
-                        .extend_from_slice(&_first_individual.individual()[previous..location]);
+                    new_vec_individual.extend_from_slice(
+                        &_first_individual.retrieve_individual()[previous..location],
+                    );
                 } else {
-                    new_vec_individual
-                        .extend_from_slice(&_second_individual.individual()[previous..location]);
+                    new_vec_individual.extend_from_slice(
+                        &_second_individual.retrieve_individual()[previous..location],
+                    );
                 }
 
                 previous = location;
@@ -243,15 +254,17 @@ mod crossover_test {
         let mut string_crossover = StringCrossover::new(1.0, 2, *seed);
         let individual =
             string_crossover.crossover(&individual, &individual2, &mut fitness_function);
-        assert_eq!(individual.individual(), &String::from("uoo"));
+        assert_eq!(individual.retrieve_individual(), &String::from("uoo"));
 
         let mut string_crossover = StringCrossover::new(1.0, 13, *seed);
         let individual = Individual::new(String::from("10101010101010"), 5.0);
         let individual2 = Individual::new(String::from("01010101010101"), 5.0);
         let individual =
             string_crossover.crossover(&individual, &individual2, &mut fitness_function);
-        assert_eq!(individual.individual(), &String::from("11111111111111"));
-        //println!("{}", individual);
+        assert_eq!(
+            individual.retrieve_individual(),
+            &String::from("11111111111111")
+        );
     }
 
     #[test]
@@ -267,14 +280,17 @@ mod crossover_test {
         let mut string_crossover = StringCrossover::new(0.0, 2, *seed);
         let individual =
             string_crossover.crossover(&individual, &individual2, &mut fitness_function);
-        assert_eq!(individual.individual(), &String::from("dos"));
+        assert_eq!(individual.retrieve_individual(), &String::from("dos"));
 
         let mut string_crossover = StringCrossover::new(0.0, 13, *seed);
         let individual = Individual::new(String::from("10101010101010"), 5.0);
         let individual2 = Individual::new(String::from("01010101010101"), 5.0);
         let individual =
             string_crossover.crossover(&individual, &individual2, &mut fitness_function);
-        assert_eq!(individual.individual(), &String::from("01010101010101"));
+        assert_eq!(
+            individual.retrieve_individual(),
+            &String::from("01010101010101")
+        );
         //println!("{}", individual);
     }
 
@@ -292,6 +308,6 @@ mod crossover_test {
         let individual2 = Individual::new(vec![4, 5, 6], 5.0);
         let individual = vec_crossover.crossover(&individual, &individual2, &mut fitness_function);
 
-        assert_eq!(individual.individual(), &vec![1, 5, 3]);
+        assert_eq!(individual.retrieve_individual(), &vec![1, 5, 3]);
     }
 }

@@ -43,7 +43,7 @@ impl Mutate for StringMutation {
         let mut new_population: Vec<Individual<String>> = Vec::new();
         for individual in population.list_of_individuals().iter() {
             let mut mutated_individual = String::new();
-            for string_individual_char in individual.individual().chars() {
+            for string_individual_char in individual.retrieve_individual().chars() {
                 let gen_number = self.seed.gen::<f64>();
                 if gen_number < self.mutation_rate {
                     let location = self.seed.gen_range(0, self.possible_candidates.len());
@@ -85,7 +85,7 @@ impl Mutate for VecIntegerMutation {
         let mut new_population: Vec<Individual<Vec<u32>>> = Vec::new();
         for individual in population.list_of_individuals().iter() {
             let mut mutated_individual = Vec::new();
-            for int_item in individual.individual().iter() {
+            for int_item in individual.retrieve_individual().iter() {
                 let gen_number = self.seed.gen::<f64>();
                 if gen_number < self.mutation_rate {
                     let location = self.seed.gen_range(0, self.possible_candidates.len());
@@ -171,8 +171,11 @@ mod mutation_test {
 
         let mut population = Population::new(list_of_individuals, ProblemType::Max);
         let new_pop = string_mutation.mutate(&population, fitness_function);
-        assert_eq!(new_pop[0].individual(), &String::from("1110000"));
-        assert_eq!(new_pop[1].individual(), &String::from("11101110101"));
+        assert_eq!(new_pop[0].retrieve_individual(), &String::from("1110000"));
+        assert_eq!(
+            new_pop[1].retrieve_individual(),
+            &String::from("11101110101")
+        );
     }
 
     #[test]
@@ -193,7 +196,7 @@ mod mutation_test {
         let mut population = Population::new(list_of_individuals, ProblemType::Max);
         let new_pop = vec_int_mutation.mutate(&population, fitness_function);
 
-        assert_eq!(new_pop[0].individual(), &vec![3, 3, 3, 2, 2]);
-        assert_eq!(new_pop[1].individual(), &vec![2, 2, 3, 3, 3]);
+        assert_eq!(new_pop[0].retrieve_individual(), &vec![3, 3, 3, 2, 2]);
+        assert_eq!(new_pop[1].retrieve_individual(), &vec![2, 2, 3, 3, 3]);
     }
 }
