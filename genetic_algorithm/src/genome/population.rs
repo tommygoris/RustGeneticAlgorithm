@@ -1,4 +1,4 @@
-use crate::crossover::genome_crossover::Crossover;
+use crate::crossover::genome_crossover::{get_default_better_individual, Crossover};
 use crate::genome::fitness_function::FitnessFunction;
 use crate::mutation::genome_mutation::Mutate;
 use crate::selection::genome_selection::SelectIndividual;
@@ -77,10 +77,21 @@ impl<T> Population<T> {
         for _ in self.list_of_individuals.iter() {
             let individual_one = selector.select_individual(self);
             let individual_two = selector.select_individual(self);
-            let new_individual =
+            let mut new_individual =
                 crossover.crossover(&individual_one, &individual_two, &mut fitness_function);
+            // TODO: re-evaluate if this doesn't make sense. If the implementing struct of the crossover trait returns a value of None, then we assume a default choosing afterwards.
 
-            new_population.push(new_individual);
+            match new_individual {
+                None => {
+                    new_individual = Option::from(get_default_better_individual(
+                        individual_one,
+                        individual_two,
+                        self.problem_type,
+                    ))
+                }
+                _ => (),
+            }
+            new_population.push(new_individual.unwrap());
         }
         self.list_of_individuals = new_population;
     }

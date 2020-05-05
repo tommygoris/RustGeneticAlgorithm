@@ -25,3 +25,7 @@ v3_22 = ["gtk/v3_22"]
 [[example]]
 name = "genetic_algorithm_gui"
 path = "../examples/genetic_algorithm_gui/main.rs"
+
+[[example]]
+name = "nn"
+path = "../examples/genetic_algorithm_gui/neural_network/main.rs"

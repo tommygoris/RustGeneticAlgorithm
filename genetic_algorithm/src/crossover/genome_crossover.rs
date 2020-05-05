@@ -1,4 +1,4 @@
-use crate::genome::population::Individual;
+use crate::genome::population::{Individual, ProblemType};
 extern crate rand;
 
 use crate::genome::fitness_function::FitnessFunction;
@@ -16,7 +16,7 @@ pub trait Crossover {
         first_individual: &Individual<Self::T>,
         second_individual: &Individual<Self::T>,
         fitness_function: &mut Box<dyn FitnessFunction<T = Self::T>>,
-    ) -> Individual<Self::T>;
+    ) -> Option<Individual<Self::T>>;
 }
 
 #[derive(Clone, Debug)]
@@ -32,10 +32,6 @@ pub struct VecIntegerCrossover {
     seed: StdRng,
 }
 
-pub struct NeuralNetCrossover {
-    crossover_rate: f64,
-}
-
 impl Crossover for StringCrossover {
     type T = String;
 
@@ -44,7 +40,7 @@ impl Crossover for StringCrossover {
         _first_individual: &Individual<String>,
         _second_individual: &Individual<String>,
         fitness_function: &mut Box<dyn FitnessFunction<T = String>>,
-    ) -> Individual<String> {
+    ) -> Option<Individual<String>> {
         let gen_number = self.seed.gen::<f64>();
 
         if gen_number < self.crossover_rate {
@@ -91,16 +87,18 @@ impl Crossover for StringCrossover {
             let new_fitness = fitness_function.calculate_fitness(&new_string_individual);
             let new_individual = Individual::new(new_string_individual, new_fitness);
             println!("resulting child: {:?}", new_individual.clone());
-            return new_individual;
+            return Some(new_individual);
         }
 
-        let new_individual: Individual<String> =
-            if _first_individual.fitness() > _second_individual.fitness() {
-                _first_individual.clone()
-            } else {
-                _second_individual.clone()
-            };
-        new_individual
+        // TODO: Should use problem type here to find actual better individual: Max vs Min Change trait to return an option and return NONE if nothing is found. Then have the population struct crossover get the default based on problem type
+        // let new_individual: Individual<String> =
+        //     if _first_individual.fitness() > _second_individual.fitness() {
+        //         _first_individual.clone()
+        //     } else {
+        //         _second_individual.clone()
+        //     };
+        // new_individual
+        None
     }
 }
 
@@ -122,7 +120,7 @@ impl Crossover for VecIntegerCrossover {
         _first_individual: &Individual<Vec<u32>>,
         _second_individual: &Individual<Vec<u32>>,
         fitness_function: &mut Box<dyn FitnessFunction<T = Vec<u32>>>,
-    ) -> Individual<Vec<u32>> {
+    ) -> Option<Individual<Vec<u32>>> {
         let gen_number = self.seed.gen::<f64>();
 
         if gen_number < self.crossover_rate {
@@ -161,15 +159,9 @@ impl Crossover for VecIntegerCrossover {
             }
             let new_fitness = fitness_function.calculate_fitness(&new_vec_individual);
             let new_individual = Individual::new(new_vec_individual, new_fitness);
-            return new_individual;
+            return Some(new_individual);
         }
-        let new_individual: Individual<Vec<u32>> =
-            if _first_individual.fitness() > _second_individual.fitness() {
-                _first_individual.clone()
-            } else {
-                _second_individual.clone()
-            };
-        new_individual
+        None
     }
 }
 
@@ -204,13 +196,36 @@ fn get_crossover_locations(
     point_locations
 }
 
+pub fn get_default_better_individual<T>(
+    indv_one: Individual<T>,
+    indv_two: Individual<T>,
+    problem_type: ProblemType,
+) -> Individual<T> {
+    match problem_type {
+        ProblemType::Max => {
+            if indv_one.fitness() > indv_two.fitness() {
+                indv_one
+            } else {
+                indv_two
+            }
+        }
+        ProblemType::Min => {
+            if indv_one.fitness() > indv_two.fitness() {
+                indv_two
+            } else {
+                indv_one
+            }
+        }
+    }
+}
+
 #[cfg(test)]
 mod crossover_test {
-    use crate::crossover::genome_crossover::Crossover;
     use crate::crossover::genome_crossover::StringCrossover;
     use crate::crossover::genome_crossover::VecIntegerCrossover;
+    use crate::crossover::genome_crossover::{get_default_better_individual, Crossover};
     use crate::genome::fitness_function::FitnessFunction;
-    use crate::genome::population::Individual;
+    use crate::genome::population::{Individual, ProblemType};
     #[derive(Default, Copy, Clone, Debug)]
     struct TestStringFitnessFunction;
     #[derive(Default, Copy, Clone, Debug)]
@@ -254,7 +269,10 @@ mod crossover_test {
         let mut string_crossover = StringCrossover::new(1.0, 2, *seed);
         let individual =
             string_crossover.crossover(&individual, &individual2, &mut fitness_function);
-        assert_eq!(individual.retrieve_individual(), &String::from("uoo"));
+        assert_eq!(
+            individual.unwrap().retrieve_individual(),
+            &String::from("uoo")
+        );
 
         let mut string_crossover = StringCrossover::new(1.0, 13, *seed);
         let individual = Individual::new(String::from("10101010101010"), 5.0);
@@ -262,7 +280,7 @@ mod crossover_test {
         let individual =
             string_crossover.crossover(&individual, &individual2, &mut fitness_function);
         assert_eq!(
-            individual.retrieve_individual(),
+            individual.unwrap().retrieve_individual(),
             &String::from("11111111111111")
         );
     }
@@ -275,20 +293,34 @@ mod crossover_test {
         ];
         let mut fitness_function: Box<dyn FitnessFunction<T = String>> =
             Box::new(TestStringFitnessFunction::default());
-        let individual = Individual::new(String::from("uno"), 5.0);
-        let individual2 = Individual::new(String::from("dos"), 5.0);
+        let mut individual = Individual::new(String::from("uno"), 5.0);
+        let individual2 = Individual::new(String::from("dos"), 6.0);
         let mut string_crossover = StringCrossover::new(0.0, 2, *seed);
-        let individual =
+        let mut individual3 =
             string_crossover.crossover(&individual, &individual2, &mut fitness_function);
-        assert_eq!(individual.retrieve_individual(), &String::from("dos"));
+        individual3 = Option::from(get_default_better_individual(
+            individual,
+            individual2,
+            ProblemType::Max,
+        ));
+        assert_eq!(
+            individual3.unwrap().retrieve_individual(),
+            &String::from("dos")
+        );
 
         let mut string_crossover = StringCrossover::new(0.0, 13, *seed);
         let individual = Individual::new(String::from("10101010101010"), 5.0);
         let individual2 = Individual::new(String::from("01010101010101"), 5.0);
-        let individual =
+        let mut individual3 =
             string_crossover.crossover(&individual, &individual2, &mut fitness_function);
+
+        individual3 = Option::from(get_default_better_individual(
+            individual,
+            individual2,
+            ProblemType::Max,
+        ));
         assert_eq!(
-            individual.retrieve_individual(),
+            individual3.unwrap().retrieve_individual(),
             &String::from("01010101010101")
         );
         //println!("{}", individual);
@@ -308,6 +340,6 @@ mod crossover_test {
         let individual2 = Individual::new(vec![4, 5, 6], 5.0);
         let individual = vec_crossover.crossover(&individual, &individual2, &mut fitness_function);
 
-        assert_eq!(individual.retrieve_individual(), &vec![1, 5, 3]);
+        assert_eq!(individual.unwrap().retrieve_individual(), &vec![1, 5, 3]);
     }
 }

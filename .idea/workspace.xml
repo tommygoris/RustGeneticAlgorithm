@@ -13,16 +13,18 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5e64fd03-db15-4a28-be4c-1bf9056ce88b" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/genetic_algorithm/src/neural_network/mod.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/genetic_algorithm/src/neural_network/neural_network.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/genetic_algorithm.iml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/genetic_algorithm.iml" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/examples/genetic_algorithm_gui/neural_network/main.rs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/genetic_algorithm/src/crossover/neural_crossover/mod.rs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/genetic_algorithm/src/crossover/neural_crossover/node_swap.rs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/genetic_algorithm/src/mutation/neural_mutation/delete_node.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/genetic_algorithm_gui/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/examples/genetic_algorithm_gui/main.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/examples/genetic_algorithm_gui/one_max/one_max.rs" beforeDir="false" afterPath="$PROJECT_DIR$/examples/genetic_algorithm_gui/one_max/one_max.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/genetic_algorithm/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/genetic_algorithm/Cargo.toml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/genetic_algorithm/src/crossover/genome_crossover.rs" beforeDir="false" afterPath="$PROJECT_DIR$/genetic_algorithm/src/crossover/genome_crossover.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/genetic_algorithm/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/genetic_algorithm/src/lib.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/genetic_algorithm/src/mutation/genome_mutation.rs" beforeDir="false" afterPath="$PROJECT_DIR$/genetic_algorithm/src/mutation/genome_mutation.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/genetic_algorithm/src/crossover/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/genetic_algorithm/src/crossover/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/genetic_algorithm/src/genome/population.rs" beforeDir="false" afterPath="$PROJECT_DIR$/genetic_algorithm/src/genome/population.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/genetic_algorithm/src/mutation/neural_mutation/add_node.rs" beforeDir="false" afterPath="$PROJECT_DIR$/genetic_algorithm/src/mutation/neural_mutation/add_node.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/genetic_algorithm/src/mutation/neural_mutation/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/genetic_algorithm/src/mutation/neural_mutation/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/genetic_algorithm/src/neural_network/neural_network.rs" beforeDir="false" afterPath="$PROJECT_DIR$/genetic_algorithm/src/neural_network/neural_network.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -31,6 +33,9 @@
   </component>
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
+  </component>
+  <component name="CoverageViewManager">
+    <option name="myElementSize" value="203" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -57,11 +62,15 @@
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
     <property name="org.rust.cargo.project.model.PROJECT_DISCOVERY" value="true" />
+    <property name="org.rust.hideDetachedFileNotificationsC:/Users/goris/CLionProjects/genetic_algorithm/examples/genetic_algorithm_gui/neural_network/main.rs" value="true" />
+    <property name="org.rust.hideDetachedFileNotificationsC:/Users/goris/CLionProjects/genetic_algorithm/genetic_algorithm/src/mutation/neural_mutation/add_node.rs" value="true" />
+    <property name="org.rust.hideDetachedFileNotificationsC:/Users/goris/CLionProjects/genetic_algorithm/genetic_algorithm/src/mutation/neural_mutation/delete_node.rs" value="true" />
+    <property name="settings.editor.selected.configurable" value="CPPToolchains" />
   </component>
   <component name="RunManager" selected="Cargo Command.Run genetic_algorithm_gui">
     <configuration name="Run genetic_algorithm_gui" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
       <option name="channel" value="DEFAULT" />
-      <option name="command" value="run --package genetic_algorithm --example genetic_algorithm_gui" />
+      <option name="command" value="run --package genetic_algorithm --example nn" />
       <option name="allFeatures" value="false" />
       <option name="nocapture" value="false" />
       <option name="emulateTerminal" value="false" />
@@ -72,9 +81,48 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Test crossover::genome_crossover::crossover_test::test_string_crossover" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+    <configuration name="Test crossover::neural_crossover::node_swap::hidden_layer_swap_test::hidden_layer_crossover_test" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
       <option name="channel" value="DEFAULT" />
-      <option name="command" value="test --package genetic_algorithm --lib crossover::genome_crossover::crossover_test::test_string_crossover -- --exact" />
+      <option name="command" value="test --package genetic_algorithm --lib crossover::neural_crossover::node_swap::hidden_layer_swap_test::hidden_layer_crossover_test -- --exact" />
+      <option name="allFeatures" value="false" />
+      <option name="nocapture" value="false" />
+      <option name="emulateTerminal" value="false" />
+      <option name="backtrace" value="SHORT" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <envs />
+      <method v="2">
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Test delete_node_test" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="channel" value="DEFAULT" />
+      <option name="command" value="test --package genetic_algorithm --lib" />
+      <option name="allFeatures" value="false" />
+      <option name="nocapture" value="false" />
+      <option name="emulateTerminal" value="false" />
+      <option name="backtrace" value="SHORT" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <envs />
+      <method v="2">
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Test mutation::neural_mutation::delete_node::delete_node_test::mutation_delete_test" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="channel" value="DEFAULT" />
+      <option name="command" value="test --package genetic_algorithm" />
+      <option name="allFeatures" value="false" />
+      <option name="nocapture" value="false" />
+      <option name="emulateTerminal" value="false" />
+      <option name="backtrace" value="SHORT" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <envs />
+      <method v="2">
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Test neural_network::neural_network::neural_network_test::network_hidden_layer_swap_and_create_new_from_test" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="channel" value="DEFAULT" />
+      <option name="command" value="test --package genetic_algorithm --lib neural_network::neural_network::neural_network_test::network_hidden_layer_swap_and_create_new_from_test -- --exact" />
       <option name="allFeatures" value="false" />
       <option name="nocapture" value="false" />
       <option name="emulateTerminal" value="false" />
@@ -87,16 +135,23 @@
     </configuration>
     <list>
       <item itemvalue="Cargo Command.Run genetic_algorithm_gui" />
-      <item itemvalue="Cargo Command.Test crossover::genome_crossover::crossover_test::test_string_crossover" />
+      <item itemvalue="Cargo Command.Test crossover::neural_crossover::node_swap::hidden_layer_swap_test::hidden_layer_crossover_test" />
+      <item itemvalue="Cargo Command.Test delete_node_test" />
+      <item itemvalue="Cargo Command.Test mutation::neural_mutation::delete_node::delete_node_test::mutation_delete_test" />
+      <item itemvalue="Cargo Command.Test neural_network::neural_network::neural_network_test::network_hidden_layer_swap_and_create_new_from_test" />
     </list>
     <recent_temporary>
       <list>
         <item itemvalue="Cargo Command.Run genetic_algorithm_gui" />
-        <item itemvalue="Cargo Command.Test crossover::genome_crossover::crossover_test::test_string_crossover" />
+        <item itemvalue="Cargo Command.Test delete_node_test" />
+        <item itemvalue="Cargo Command.Test crossover::neural_crossover::node_swap::hidden_layer_swap_test::hidden_layer_crossover_test" />
+        <item itemvalue="Cargo Command.Test neural_network::neural_network::neural_network_test::network_hidden_layer_swap_and_create_new_from_test" />
+        <item itemvalue="Cargo Command.Test mutation::neural_mutation::delete_node::delete_node_test::mutation_delete_test" />
       </list>
     </recent_temporary>
   </component>
   <component name="RustProjectSettings">
+    <option name="runRustfmtOnSave" value="true" />
     <option name="toolchainHomeDirectory" value="$USER_HOME$/.cargo/bin" />
     <option name="version" value="2" />
   </component>
@@ -135,6 +190,51 @@
       <workItem from="1578012231275" duration="1555000" />
       <workItem from="1578018873054" duration="6478000" />
       <workItem from="1578072297665" duration="9254000" />
+      <workItem from="1578263005339" duration="24000" />
+      <workItem from="1580179434959" duration="820000" />
+      <workItem from="1580488149071" duration="3620000" />
+      <workItem from="1580575149525" duration="6015000" />
+      <workItem from="1580662178480" duration="782000" />
+      <workItem from="1581092406675" duration="1766000" />
+      <workItem from="1581101704822" duration="5291000" />
+      <workItem from="1581107953105" duration="405000" />
+      <workItem from="1581108368514" duration="93000" />
+      <workItem from="1581108554224" duration="44000" />
+      <workItem from="1581108609280" duration="265000" />
+      <workItem from="1581108914099" duration="3000" />
+      <workItem from="1581108933195" duration="12648000" />
+      <workItem from="1581174147264" duration="17307000" />
+      <workItem from="1581273218614" duration="8456000" />
+      <workItem from="1581384164319" duration="1165000" />
+      <workItem from="1581789192397" duration="11009000" />
+      <workItem from="1581866028485" duration="6480000" />
+      <workItem from="1581990260866" duration="5036000" />
+      <workItem from="1582077097087" duration="4887000" />
+      <workItem from="1582162373940" duration="1035000" />
+      <workItem from="1582301016646" duration="15370000" />
+      <workItem from="1582389421764" duration="34000" />
+      <workItem from="1582389492192" duration="14934000" />
+      <workItem from="1582482187585" duration="4558000" />
+      <workItem from="1582595011901" duration="929000" />
+      <workItem from="1582681934544" duration="600000" />
+      <workItem from="1582766194384" duration="3203000" />
+      <workItem from="1582922847241" duration="6192000" />
+      <workItem from="1582991005621" duration="8611000" />
+      <workItem from="1583079010748" duration="16723000" />
+      <workItem from="1583198329348" duration="6126000" />
+      <workItem from="1583370551356" duration="373000" />
+      <workItem from="1583455888938" duration="1566000" />
+      <workItem from="1583457527925" duration="603000" />
+      <workItem from="1583510483534" duration="9784000" />
+      <workItem from="1583691429978" duration="3722000" />
+      <workItem from="1583801722961" duration="1649000" />
+      <workItem from="1584207304135" duration="3646000" />
+      <workItem from="1584395174922" duration="2352000" />
+      <workItem from="1584397547524" duration="1197000" />
+      <workItem from="1584488425119" duration="599000" />
+      <workItem from="1584656810770" duration="604000" />
+      <workItem from="1584816637522" duration="598000" />
+      <workItem from="1584894075646" duration="620000" />
     </task>
     <servers />
   </component>
@@ -155,33 +255,82 @@
     </option>
   </component>
   <component name="WindowStateProjectService">
-    <state x="414" y="176" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1578019192530">
+    <state x="391" y="203" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1584397042136">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="414" y="176" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040/1920.-26.1920.1040@0.0.1920.1040" timestamp="1578019192530" />
-    <state width="1877" height="217" key="GridCell.Tab.0.bottom" timestamp="1578105335703">
+    <state x="391" y="203" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040/1920.-26.1920.1040@0.0.1920.1040" timestamp="1584397042136" />
+    <state x="92" y="92" width="1736" height="856" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog" timestamp="1584397820178">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="217" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.-26.1920.1040@0.0.1920.1040" timestamp="1578105335703" />
-    <state width="1877" height="217" key="GridCell.Tab.0.center" timestamp="1578105335703">
+    <state x="92" y="92" width="1736" height="856" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog/0.0.1920.1040/1920.-26.1920.1040@0.0.1920.1040" timestamp="1584397820178" />
+    <state x="728" y="323" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1583716961267">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="217" key="GridCell.Tab.0.center/0.0.1920.1040/1920.-26.1920.1040@0.0.1920.1040" timestamp="1578105335703" />
-    <state width="1877" height="217" key="GridCell.Tab.0.left" timestamp="1578105335703">
+    <state x="728" y="323" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1920.1040/1920.-26.1920.1040@0.0.1920.1040" timestamp="1583716961267" />
+    <state x="640" y="257" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog" timestamp="1584397527796">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="217" key="GridCell.Tab.0.left/0.0.1920.1040/1920.-26.1920.1040@0.0.1920.1040" timestamp="1578105335703" />
-    <state width="1877" height="217" key="GridCell.Tab.0.right" timestamp="1578105335703">
+    <state x="640" y="257" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog/0.0.1920.1040/1920.-26.1920.1040@0.0.1920.1040" timestamp="1584397527796" />
+    <state x="819" y="232" key="#xdebugger.evaluate" timestamp="1582302998086">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="217" key="GridCell.Tab.0.right/0.0.1920.1040/1920.-26.1920.1040@0.0.1920.1040" timestamp="1578105335703" />
-    <state x="656" y="345" key="com.intellij.ide.util.TipDialog" timestamp="1578072305584">
+    <state x="819" y="232" key="#xdebugger.evaluate/0.0.1920.1040/1920.-26.1920.1040@0.0.1920.1040" timestamp="1582302998086" />
+    <state width="431" height="466" key="DebuggerActiveHint" timestamp="1581276817639">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="656" y="345" key="com.intellij.ide.util.TipDialog/0.0.1920.1040/1920.-26.1920.1040@0.0.1920.1040" timestamp="1578072305584" />
+    <state width="431" height="466" key="DebuggerActiveHint/0.0.1920.1040/1920.-26.1920.1040@0.0.1920.1040" timestamp="1581276817639" />
+    <state x="740" y="275" key="FileChooserDialogImpl" timestamp="1581108972004">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="740" y="275" key="FileChooserDialogImpl/0.0.1920.1040/1920.-26.1920.1040@0.0.1920.1040" timestamp="1581108972004" />
+    <state width="1877" height="252" key="GridCell.Tab.0.bottom" timestamp="1584399048870">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="252" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.-26.1920.1040@0.0.1920.1040" timestamp="1584399048870" />
+    <state width="1877" height="252" key="GridCell.Tab.0.center" timestamp="1584399048870">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="252" key="GridCell.Tab.0.center/0.0.1920.1040/1920.-26.1920.1040@0.0.1920.1040" timestamp="1584399048870" />
+    <state width="1877" height="252" key="GridCell.Tab.0.left" timestamp="1584399048870">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="252" key="GridCell.Tab.0.left/0.0.1920.1040/1920.-26.1920.1040@0.0.1920.1040" timestamp="1584399048870" />
+    <state width="1877" height="252" key="GridCell.Tab.0.right" timestamp="1584399048870">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="252" key="GridCell.Tab.0.right/0.0.1920.1040/1920.-26.1920.1040@0.0.1920.1040" timestamp="1584399048870" />
+    <state width="1877" height="347" key="GridCell.Tab.1.bottom" timestamp="1583720122079">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="347" key="GridCell.Tab.1.bottom/0.0.1920.1040/1920.-26.1920.1040@0.0.1920.1040" timestamp="1583720122079" />
+    <state width="1877" height="347" key="GridCell.Tab.1.center" timestamp="1583720122079">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="347" key="GridCell.Tab.1.center/0.0.1920.1040/1920.-26.1920.1040@0.0.1920.1040" timestamp="1583720122079" />
+    <state width="1877" height="347" key="GridCell.Tab.1.left" timestamp="1583720122079">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="347" key="GridCell.Tab.1.left/0.0.1920.1040/1920.-26.1920.1040@0.0.1920.1040" timestamp="1583720122079" />
+    <state width="1877" height="347" key="GridCell.Tab.1.right" timestamp="1583720122079">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state width="1877" height="347" key="GridCell.Tab.1.right/0.0.1920.1040/1920.-26.1920.1040@0.0.1920.1040" timestamp="1583720122079" />
+    <state x="461" y="163" key="SettingsEditor" timestamp="1581109004316">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="461" y="163" key="SettingsEditor/0.0.1920.1040/1920.-26.1920.1040@0.0.1920.1040" timestamp="1581109004316" />
+    <state x="656" y="335" key="com.intellij.ide.util.TipDialog" timestamp="1584895965913">
+      <screen x="0" y="0" width="1920" height="1040" />
+    </state>
+    <state x="656" y="335" key="com.intellij.ide.util.TipDialog/0.0.1920.1040/1920.-26.1920.1040@0.0.1920.1040" timestamp="1584895965913" />
     <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1578073613954">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
     <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040/1920.-26.1920.1040@0.0.1920.1040" timestamp="1578073613954" />
+  </component>
+  <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/genetic_algorithm$Test_neural_network__neural_network__neural_network_test__network_remove_node.info" NAME="Test neural_network::neural_network::neural_network_test::network_remove_node Coverage Results" MODIFIED="1582396124076" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="RsCoverageRunner" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" CONTEXT_FILE_PATH="C:\Users\goris\CLionProjects\genetic_algorithm" />
+    <SUITE FILE_PATH="coverage/genetic_algorithm$Test_delete_node_test.info" NAME="Test delete_node_test Coverage Results" MODIFIED="1582486959172" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="RsCoverageRunner" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" CONTEXT_FILE_PATH="C:\Users\goris\CLionProjects\genetic_algorithm" />
+    <SUITE FILE_PATH="coverage/genetic_algorithm$Test_add_node_test.info" NAME="Test add_node_test Coverage Results" MODIFIED="1582303871280" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="RsCoverageRunner" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" CONTEXT_FILE_PATH="C:\Users\goris\CLionProjects\genetic_algorithm" />
   </component>
 </project>
