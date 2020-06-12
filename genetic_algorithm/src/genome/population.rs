@@ -77,21 +77,14 @@ impl<T> Population<T> {
         for _ in self.list_of_individuals.iter() {
             let individual_one = selector.select_individual(self);
             let individual_two = selector.select_individual(self);
-            let mut new_individual =
-                crossover.crossover(&individual_one, &individual_two, &mut fitness_function);
-            // TODO: re-evaluate if this doesn't make sense. If the implementing struct of the crossover trait returns a value of None, then we assume a default choosing afterwards.
+            let mut new_individual = crossover.crossover(
+                &individual_one,
+                &individual_two,
+                &mut fitness_function,
+                &self.problem_type,
+            );
 
-            match new_individual {
-                None => {
-                    new_individual = Option::from(get_default_better_individual(
-                        individual_one,
-                        individual_two,
-                        self.problem_type,
-                    ))
-                }
-                _ => (),
-            }
-            new_population.push(new_individual.unwrap());
+            new_population.push(new_individual);
         }
         self.list_of_individuals = new_population;
     }

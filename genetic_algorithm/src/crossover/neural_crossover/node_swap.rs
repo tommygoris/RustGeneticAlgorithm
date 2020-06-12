@@ -1,6 +1,6 @@
-use crate::crossover::genome_crossover::Crossover;
+use crate::crossover::genome_crossover::{get_default_better_individual, Crossover};
 use crate::genome::fitness_function::FitnessFunction;
-use crate::genome::population::Individual;
+use crate::genome::population::{Individual, ProblemType};
 use crate::neural_network::neural_network::NeuralNetwork;
 use rand::rngs::StdRng;
 use rand::{Rng, SeedableRng};
@@ -28,7 +28,8 @@ impl Crossover for HiddenLayerSwap {
         _first_individual: &Individual<NeuralNetwork>,
         _second_individual: &Individual<NeuralNetwork>,
         fitness_function: &mut Box<dyn FitnessFunction<T = NeuralNetwork>>,
-    ) -> Option<Individual<NeuralNetwork>> {
+        problem_type: &ProblemType,
+    ) -> Individual<NeuralNetwork> {
         let gen_number = self.seed.gen::<f64>();
 
         if gen_number < self.swap_chance {
@@ -38,14 +39,20 @@ impl Crossover for HiddenLayerSwap {
             let new_net = indv_one_net.hidden_layer_swap_and_create_new_from(indv_two_net.borrow());
 
             return match new_net {
-                None => None,
+                None => get_default_better_individual(
+                    _first_individual,
+                    _second_individual,
+                    problem_type,
+                )
+                .clone(),
                 Some(x) => {
                     let new_fitness = fitness_function.calculate_fitness(x.borrow());
-                    Some(Individual::new(x, new_fitness))
+                    Individual::new(x, new_fitness)
                 }
             };
         }
-        None
+        return get_default_better_individual(_first_individual, _second_individual, problem_type)
+            .clone();
     }
 }
 
@@ -54,7 +61,7 @@ mod hidden_layer_swap_test {
     use crate::crossover::genome_crossover::Crossover;
     use crate::crossover::neural_crossover::node_swap::HiddenLayerSwap;
     use crate::genome::fitness_function::FitnessFunction;
-    use crate::genome::population::Individual;
+    use crate::genome::population::{Individual, ProblemType};
     use crate::neural_network::neural_network::NeuralNetwork;
     use sha2::Digest;
     use std::borrow::Borrow;
@@ -88,23 +95,19 @@ mod hidden_layer_swap_test {
             indv_one.borrow(),
             indv_two.borrow(),
             &mut fitness_function,
+            &ProblemType::Max,
         );
 
-        assert_eq!(
-            new_net
-                .unwrap()
-                .retrieve_individual()
-                .is_hidden_layer_empty(),
-            false
-        );
+        assert_eq!(new_net.retrieve_individual().is_hidden_layer_empty(), false);
 
         hidden_layer_crossover = HiddenLayerSwap::new(0.0, *DEFAULT_SEED);
         let new_net = hidden_layer_crossover.crossover(
             indv_one.borrow(),
             indv_two.borrow(),
             &mut fitness_function,
+            &ProblemType::Max,
         );
 
-        assert_eq!(new_net.is_none(), true);
+        assert_eq!(new_net.retrieve_individual().is_hidden_layer_empty(), false);
     }
 }

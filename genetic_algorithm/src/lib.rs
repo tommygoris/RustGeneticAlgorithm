@@ -1,3 +1,4 @@
+#![feature(in_band_lifetimes)]
 extern crate rand;
 
 pub mod crossover;
