@@ -4,6 +4,7 @@ use crate::mutation::genome_mutation::Mutate;
 use crate::neural_network::neural_network::NeuralNetwork;
 use rand::rngs::StdRng;
 use rand::{Rng, SeedableRng};
+use serde::Deserialize;
 
 // A node with a new hidden layer is guaranteed to be added (as long as the mutation rate just for add node is met) if the neural network currently has 0 hidden nodes.
 // If the neural network already has a hidden node/layer, then both add a new node and add a new layer have to met to create a new hidden layer with a lone node.
@@ -14,7 +15,11 @@ pub struct AddNode {
 }
 
 impl AddNode {
-    fn new(add_node_mutation_rate: f64, add_layer_mutation_rate: f64, seed: [u8; 32]) -> AddNode {
+    pub fn new(
+        add_node_mutation_rate: f64,
+        add_layer_mutation_rate: f64,
+        seed: [u8; 32],
+    ) -> AddNode {
         AddNode {
             add_node_mutation_rate,
             add_layer_mutation_rate,
@@ -77,7 +82,7 @@ mod add_node_test {
     impl FitnessFunction for TestNeuralNetworkFitnessFunction {
         type T = NeuralNetwork;
 
-        fn calculate_fitness(&mut self, individual: &NeuralNetwork) -> f64 {
+        fn calculate_fitness(&mut self, _: &NeuralNetwork) -> f64 {
             1.0
         }
     }

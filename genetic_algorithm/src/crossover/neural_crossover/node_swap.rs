@@ -4,6 +4,7 @@ use crate::genome::population::{Individual, ProblemType};
 use crate::neural_network::neural_network::NeuralNetwork;
 use rand::rngs::StdRng;
 use rand::{Rng, SeedableRng};
+use serde::Deserialize;
 use std::borrow::Borrow;
 
 pub struct HiddenLayerSwap {
@@ -63,7 +64,6 @@ mod hidden_layer_swap_test {
     use crate::genome::fitness_function::FitnessFunction;
     use crate::genome::population::{Individual, ProblemType};
     use crate::neural_network::neural_network::NeuralNetwork;
-    use sha2::Digest;
     use std::borrow::Borrow;
 
     const DEFAULT_SEED: &[u8; 32] = &[
@@ -75,7 +75,7 @@ mod hidden_layer_swap_test {
     impl FitnessFunction for TestNeuralNetworkFitnessFunction {
         type T = NeuralNetwork;
 
-        fn calculate_fitness(&mut self, individual: &NeuralNetwork) -> f64 {
+        fn calculate_fitness(&mut self, _: &NeuralNetwork) -> f64 {
             1.0
         }
     }
@@ -85,8 +85,8 @@ mod hidden_layer_swap_test {
 
         let xs: [u32; 1] = [5];
         let data = 1;
-        let mut net_one = NeuralNetwork::new(5, xs.as_ref(), data, *DEFAULT_SEED);
-        let mut net_two = NeuralNetwork::new(5, xs.as_ref(), data, *DEFAULT_SEED);
+        let net_one = NeuralNetwork::new(5, xs.as_ref(), data, *DEFAULT_SEED);
+        let net_two = NeuralNetwork::new(5, xs.as_ref(), data, *DEFAULT_SEED);
         let indv_one = Individual::new(net_one, 1.0);
         let indv_two = Individual::new(net_two, 2.0);
         let mut fitness_function: Box<dyn FitnessFunction<T = NeuralNetwork>> =

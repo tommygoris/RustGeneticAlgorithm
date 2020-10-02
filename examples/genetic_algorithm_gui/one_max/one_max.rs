@@ -1,3 +1,4 @@
+use crate::one_max;
 use crate::problem_settings::ProblemSettings;
 use crate::{Model, Step};
 use crossbeam_utils::thread;
@@ -14,14 +15,13 @@ use std::ops::{Deref, DerefMut};
 use std::sync::{Arc, Condvar, Mutex};
 use std::thread::JoinHandle;
 use std::thread::Thread;
-
 #[derive(Default, Copy, Clone, Debug)]
 struct OneMaxFitnessFunction;
 
 struct InternalState {
     current_gen: u64,
     crossover: Box<dyn Crossover<T = String> + Send + Sync>,
-    selector: Box<dyn SelectIndividual<T = String> + Send + Sync>,
+    selector: Box<dyn SelectIndividual<String> + Send + Sync>,
     mutation: Box<dyn Mutate<T = String> + Send + Sync>,
 }
 
@@ -37,7 +37,7 @@ impl OneMax {
         current_gen: u64,
         is_started: bool,
         crossover: Box<dyn Crossover<T = String> + Send + Sync>,
-        selector: Box<dyn SelectIndividual<T = String> + Send + Sync>,
+        selector: Box<dyn SelectIndividual<String> + Send + Sync>,
         mutation: Box<dyn Mutate<T = String> + Send + Sync>,
         seed: &[u8; 32],
         population_size: u64,
@@ -48,6 +48,7 @@ impl OneMax {
             selector,
             mutation,
         };
+
         OneMax {
             internal_state,
             is_started,

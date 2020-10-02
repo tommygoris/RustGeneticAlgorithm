@@ -1,4 +1,5 @@
 #![feature(in_band_lifetimes)]
+#![feature(iterator_fold_self)]
 extern crate rand;
 
 pub mod crossover;

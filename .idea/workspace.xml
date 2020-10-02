@@ -13,18 +13,27 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="5e64fd03-db15-4a28-be4c-1bf9056ce88b" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/examples/genetic_algorithm_gui/neural_network/main.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/genetic_algorithm/src/crossover/neural_crossover/mod.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/genetic_algorithm/src/crossover/neural_crossover/node_swap.rs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/genetic_algorithm/src/mutation/neural_mutation/delete_node.rs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/examples/genetic_algorithm_gui/neural_network/images_net/main.rs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/examples/genetic_algorithm_gui/neural_network/options_ai/main.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/genetic_algorithm_gui/main.rs" beforeDir="false" afterPath="$PROJECT_DIR$/examples/genetic_algorithm_gui/one_max/main.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/genetic_algorithm_gui/neural_network/main.rs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/genetic_algorithm_gui/neural_network/train-images.idx3-ubyte" beforeDir="false" afterPath="$PROJECT_DIR$/examples/genetic_algorithm_gui/neural_network/images_net/train-images.idx3-ubyte" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/genetic_algorithm_gui/neural_network/train-labels.idx1-ubyte" beforeDir="false" afterPath="$PROJECT_DIR$/examples/genetic_algorithm_gui/neural_network/images_net/train-labels.idx1-ubyte" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/genetic_algorithm_gui/one_max/mod.rs" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/genetic_algorithm_gui/one_max/one_max.rs" beforeDir="false" afterPath="$PROJECT_DIR$/examples/genetic_algorithm_gui/one_max/one_max.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/genetic_algorithm_gui/problem_settings.rs" beforeDir="false" afterPath="$PROJECT_DIR$/examples/genetic_algorithm_gui/one_max/problem_settings.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/examples/genetic_algorithm_gui/window.glade" beforeDir="false" afterPath="$PROJECT_DIR$/examples/genetic_algorithm_gui/one_max/window.glade" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/genetic_algorithm/Cargo.toml" beforeDir="false" afterPath="$PROJECT_DIR$/genetic_algorithm/Cargo.toml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/genetic_algorithm/src/crossover/genome_crossover.rs" beforeDir="false" afterPath="$PROJECT_DIR$/genetic_algorithm/src/crossover/genome_crossover.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/genetic_algorithm/src/crossover/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/genetic_algorithm/src/crossover/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/genetic_algorithm/src/crossover/neural_crossover/node_swap.rs" beforeDir="false" afterPath="$PROJECT_DIR$/genetic_algorithm/src/crossover/neural_crossover/node_swap.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/genetic_algorithm/src/genome/population.rs" beforeDir="false" afterPath="$PROJECT_DIR$/genetic_algorithm/src/genome/population.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/genetic_algorithm/src/lib.rs" beforeDir="false" afterPath="$PROJECT_DIR$/genetic_algorithm/src/lib.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/genetic_algorithm/src/mutation/genome_mutation.rs" beforeDir="false" afterPath="$PROJECT_DIR$/genetic_algorithm/src/mutation/genome_mutation.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/genetic_algorithm/src/mutation/neural_mutation/add_node.rs" beforeDir="false" afterPath="$PROJECT_DIR$/genetic_algorithm/src/mutation/neural_mutation/add_node.rs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/genetic_algorithm/src/mutation/neural_mutation/mod.rs" beforeDir="false" afterPath="$PROJECT_DIR$/genetic_algorithm/src/mutation/neural_mutation/mod.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/genetic_algorithm/src/mutation/neural_mutation/delete_node.rs" beforeDir="false" afterPath="$PROJECT_DIR$/genetic_algorithm/src/mutation/neural_mutation/delete_node.rs" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/genetic_algorithm/src/neural_network/neural_network.rs" beforeDir="false" afterPath="$PROJECT_DIR$/genetic_algorithm/src/neural_network/neural_network.rs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/genetic_algorithm/src/selection/genome_selection.rs" beforeDir="false" afterPath="$PROJECT_DIR$/genetic_algorithm/src/selection/genome_selection.rs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -33,9 +42,6 @@
   </component>
   <component name="ClangdSettings">
     <option name="formatViaClangd" value="false" />
-  </component>
-  <component name="CoverageViewManager">
-    <option name="myElementSize" value="203" />
   </component>
   <component name="FileTemplateManagerImpl">
     <option name="RECENT_TEMPLATES">
@@ -53,65 +59,33 @@
   <component name="ProjectId" id="1Swd4yjqwt35rZ4KOJmVGvqLsq4" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
-    <option name="showExcludedFiles" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
   <component name="PropertiesComponent">
     <property name="WebServerToolWindowFactoryState" value="false" />
+    <property name="cf.first.check.clang-format" value="false" />
     <property name="last_opened_file_path" value="$PROJECT_DIR$" />
     <property name="nodejs_interpreter_path.stuck_in_default_project" value="undefined stuck path" />
     <property name="nodejs_npm_path_reset_for_default_project" value="true" />
+    <property name="nodejs_package_manager_path" value="npm" />
     <property name="org.rust.cargo.project.model.PROJECT_DISCOVERY" value="true" />
     <property name="org.rust.hideDetachedFileNotificationsC:/Users/goris/CLionProjects/genetic_algorithm/examples/genetic_algorithm_gui/neural_network/main.rs" value="true" />
+    <property name="org.rust.hideDetachedFileNotificationsC:/Users/goris/CLionProjects/genetic_algorithm/examples/genetic_algorithm_gui/neural_network/options_ai/main.rs" value="true" />
     <property name="org.rust.hideDetachedFileNotificationsC:/Users/goris/CLionProjects/genetic_algorithm/genetic_algorithm/src/mutation/neural_mutation/add_node.rs" value="true" />
     <property name="org.rust.hideDetachedFileNotificationsC:/Users/goris/CLionProjects/genetic_algorithm/genetic_algorithm/src/mutation/neural_mutation/delete_node.rs" value="true" />
-    <property name="settings.editor.selected.configurable" value="CPPToolchains" />
+    <property name="settings.editor.selected.configurable" value="preferences.lookFeel" />
   </component>
-  <component name="RunManager" selected="Cargo Command.Run genetic_algorithm_gui">
-    <configuration name="Run genetic_algorithm_gui" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="channel" value="DEFAULT" />
-      <option name="command" value="run --package genetic_algorithm --example nn" />
-      <option name="allFeatures" value="false" />
-      <option name="nocapture" value="false" />
-      <option name="emulateTerminal" value="false" />
-      <option name="backtrace" value="SHORT" />
-      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
-      <envs />
-      <method v="2">
-        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="Test crossover::neural_crossover::node_swap::hidden_layer_swap_test::hidden_layer_crossover_test" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="channel" value="DEFAULT" />
-      <option name="command" value="test --package genetic_algorithm --lib crossover::neural_crossover::node_swap::hidden_layer_swap_test::hidden_layer_crossover_test -- --exact" />
-      <option name="allFeatures" value="false" />
-      <option name="nocapture" value="false" />
-      <option name="emulateTerminal" value="false" />
-      <option name="backtrace" value="SHORT" />
-      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
-      <envs />
-      <method v="2">
-        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="Test delete_node_test" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
-      <option name="channel" value="DEFAULT" />
-      <option name="command" value="test --package genetic_algorithm --lib" />
-      <option name="allFeatures" value="false" />
-      <option name="nocapture" value="false" />
-      <option name="emulateTerminal" value="false" />
-      <option name="backtrace" value="SHORT" />
-      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
-      <envs />
-      <method v="2">
-        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
-      </method>
-    </configuration>
-    <configuration name="Test mutation::neural_mutation::delete_node::delete_node_test::mutation_delete_test" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+  <component name="RecentsManager">
+    <key name="MoveFile.RECENT_KEYS">
+      <recent name="C:\Users\goris\CLionProjects\genetic_algorithm\examples\genetic_algorithm_gui\one_max" />
+      <recent name="C:\Users\goris\CLionProjects\genetic_algorithm\examples\genetic_algorithm_gui\neural_network\images_net" />
+    </key>
+  </component>
+  <component name="RunManager" selected="Cargo.Test genome::population::population_test::save_and_load_to_file">
+    <configuration name="Run nn" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
       <option name="channel" value="DEFAULT" />
       <option name="command" value="test --package genetic_algorithm" />
       <option name="allFeatures" value="false" />
-      <option name="nocapture" value="false" />
       <option name="emulateTerminal" value="false" />
       <option name="backtrace" value="SHORT" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -120,11 +94,58 @@
         <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
       </method>
     </configuration>
-    <configuration name="Test neural_network::neural_network::neural_network_test::network_hidden_layer_swap_and_create_new_from_test" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+    <configuration name="Test genome::population::population_test::find_top_individual" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
       <option name="channel" value="DEFAULT" />
-      <option name="command" value="test --package genetic_algorithm --lib neural_network::neural_network::neural_network_test::network_hidden_layer_swap_and_create_new_from_test -- --exact" />
+      <option name="command" value="test --package genetic_algorithm --lib genome::population::population_test::find_top_individual -- --exact" />
       <option name="allFeatures" value="false" />
-      <option name="nocapture" value="false" />
+      <option name="emulateTerminal" value="false" />
+      <option name="backtrace" value="SHORT" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <envs />
+      <method v="2">
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Test genome::population::population_test::save_and_load_to_file" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="channel" value="DEFAULT" />
+      <option name="command" value="test --package genetic_algorithm --lib genome::population::population_test::save_and_load_to_file -- --exact" />
+      <option name="allFeatures" value="false" />
+      <option name="emulateTerminal" value="false" />
+      <option name="backtrace" value="SHORT" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <envs />
+      <method v="2">
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Test mutation::neural_mutation::delete_node::delete_node_test::mutation_delete_test (1)" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="channel" value="DEFAULT" />
+      <option name="command" value="test --package genetic_algorithm --lib mutation::neural_mutation::delete_node::delete_node_test::mutation_delete_test -- --exact" />
+      <option name="allFeatures" value="false" />
+      <option name="emulateTerminal" value="false" />
+      <option name="backtrace" value="SHORT" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <envs />
+      <method v="2">
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="Test neural_network::neural_network::neural_network_test::network_add_node_with_new_layer" type="CargoCommandRunConfiguration" factoryName="Cargo Command" temporary="true">
+      <option name="channel" value="DEFAULT" />
+      <option name="command" value="test --package genetic_algorithm --lib" />
+      <option name="allFeatures" value="false" />
+      <option name="emulateTerminal" value="false" />
+      <option name="backtrace" value="SHORT" />
+      <option name="workingDirectory" value="file://$PROJECT_DIR$" />
+      <envs />
+      <method v="2">
+        <option name="CARGO.BUILD_TASK_PROVIDER" enabled="true" />
+      </method>
+    </configuration>
+    <configuration name="run options" type="CargoCommandRunConfiguration" factoryName="Cargo Command">
+      <option name="channel" value="DEFAULT" />
+      <option name="command" value="run --package genetic_algorithm --example genetic_algorithm_gui" />
+      <option name="allFeatures" value="false" />
       <option name="emulateTerminal" value="false" />
       <option name="backtrace" value="SHORT" />
       <option name="workingDirectory" value="file://$PROJECT_DIR$" />
@@ -134,19 +155,19 @@
       </method>
     </configuration>
     <list>
-      <item itemvalue="Cargo Command.Run genetic_algorithm_gui" />
-      <item itemvalue="Cargo Command.Test crossover::neural_crossover::node_swap::hidden_layer_swap_test::hidden_layer_crossover_test" />
-      <item itemvalue="Cargo Command.Test delete_node_test" />
-      <item itemvalue="Cargo Command.Test mutation::neural_mutation::delete_node::delete_node_test::mutation_delete_test" />
-      <item itemvalue="Cargo Command.Test neural_network::neural_network::neural_network_test::network_hidden_layer_swap_and_create_new_from_test" />
+      <item itemvalue="Cargo.run options" />
+      <item itemvalue="Cargo.Run nn" />
+      <item itemvalue="Cargo.Test genome::population::population_test::find_top_individual" />
+      <item itemvalue="Cargo.Test genome::population::population_test::save_and_load_to_file" />
+      <item itemvalue="Cargo.Test mutation::neural_mutation::delete_node::delete_node_test::mutation_delete_test (1)" />
+      <item itemvalue="Cargo.Test neural_network::neural_network::neural_network_test::network_add_node_with_new_layer" />
     </list>
     <recent_temporary>
       <list>
-        <item itemvalue="Cargo Command.Run genetic_algorithm_gui" />
-        <item itemvalue="Cargo Command.Test delete_node_test" />
-        <item itemvalue="Cargo Command.Test crossover::neural_crossover::node_swap::hidden_layer_swap_test::hidden_layer_crossover_test" />
-        <item itemvalue="Cargo Command.Test neural_network::neural_network::neural_network_test::network_hidden_layer_swap_and_create_new_from_test" />
-        <item itemvalue="Cargo Command.Test mutation::neural_mutation::delete_node::delete_node_test::mutation_delete_test" />
+        <item itemvalue="Cargo.Test genome::population::population_test::save_and_load_to_file" />
+        <item itemvalue="Cargo.Test genome::population::population_test::find_top_individual" />
+        <item itemvalue="Cargo.Test neural_network::neural_network::neural_network_test::network_add_node_with_new_layer" />
+        <item itemvalue="Cargo.Run nn" />
       </list>
     </recent_temporary>
   </component>
@@ -155,18 +176,7 @@
     <option name="toolchainHomeDirectory" value="$USER_HOME$/.cargo/bin" />
     <option name="version" value="2" />
   </component>
-  <component name="ServiceViewManager">
-    <option name="viewStates">
-      <list>
-        <serviceView>
-          <treeState>
-            <expand />
-            <select />
-          </treeState>
-        </serviceView>
-      </list>
-    </option>
-  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="SvnConfiguration">
     <configuration />
   </component>
@@ -235,100 +245,127 @@
       <workItem from="1584656810770" duration="604000" />
       <workItem from="1584816637522" duration="598000" />
       <workItem from="1584894075646" duration="620000" />
+      <workItem from="1591150854865" duration="3031000" />
+      <workItem from="1591835413331" duration="605000" />
+      <workItem from="1591921049445" duration="605000" />
+      <workItem from="1591972682471" duration="34648000" />
+      <workItem from="1592067065874" duration="2096000" />
+      <workItem from="1592071400447" duration="1113000" />
+      <workItem from="1592266183305" duration="607000" />
+      <workItem from="1592268011750" duration="913000" />
+      <workItem from="1592357985087" duration="97000" />
+      <workItem from="1592435647315" duration="1486000" />
+      <workItem from="1592440268566" duration="27000" />
+      <workItem from="1592440312669" duration="687000" />
+      <workItem from="1592522653877" duration="227000" />
+      <workItem from="1592522902554" duration="600000" />
+      <workItem from="1592589225263" duration="9584000" />
+      <workItem from="1592691433742" duration="1203000" />
+      <workItem from="1593132189146" duration="603000" />
+      <workItem from="1594418151672" duration="603000" />
+      <workItem from="1594425967764" duration="600000" />
+      <workItem from="1595096331020" duration="392000" />
+      <workItem from="1595096739034" duration="35000" />
+      <workItem from="1601056976259" duration="3697000" />
+      <workItem from="1601086423934" duration="1022000" />
+      <workItem from="1601130431849" duration="19173000" />
+      <workItem from="1601219996202" duration="15626000" />
+      <workItem from="1601343116399" duration="678000" />
+      <workItem from="1601595659008" duration="2841000" />
     </task>
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
-    <option name="version" value="1" />
+    <option name="version" value="3" />
   </component>
   <component name="Vcs.Log.Tabs.Properties">
     <option name="TAB_STATES">
       <map>
         <entry key="MAIN">
           <value>
-            <State>
-              <option name="COLUMN_ORDER" />
-            </State>
+            <State />
           </value>
         </entry>
       </map>
     </option>
+    <option name="oldMeFiltersMigrated" value="true" />
   </component>
   <component name="WindowStateProjectService">
-    <state x="391" y="203" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1584397042136">
+    <state x="414" y="175" width="1092" height="714" key="#com.intellij.execution.impl.EditConfigurationsDialog" timestamp="1601222518202">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="391" y="203" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040/1920.-26.1920.1040@0.0.1920.1040" timestamp="1584397042136" />
-    <state x="92" y="92" width="1736" height="856" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog" timestamp="1584397820178">
+    <state x="414" y="175" width="1092" height="714" key="#com.intellij.execution.impl.EditConfigurationsDialog/0.0.1920.1040/1920.-26.1920.1040@0.0.1920.1040" timestamp="1601222518202" />
+    <state x="92" y="92" width="1736" height="856" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog" timestamp="1601061031256">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="92" y="92" width="1736" height="856" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog/0.0.1920.1040/1920.-26.1920.1040@0.0.1920.1040" timestamp="1584397820178" />
-    <state x="728" y="323" key="#com.intellij.fileTypes.FileTypeChooser" timestamp="1583716961267">
+    <state x="92" y="92" width="1736" height="856" key="#com.intellij.execution.junit2.states.ComparisonFailureState$DiffDialog/0.0.1920.1040/1920.-26.1920.1040@0.0.1920.1040" timestamp="1601061031256" />
+    <state x="572" y="2" key="CommitChangelistDialog2" timestamp="1601185105878">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="728" y="323" key="#com.intellij.fileTypes.FileTypeChooser/0.0.1920.1040/1920.-26.1920.1040@0.0.1920.1040" timestamp="1583716961267" />
-    <state x="640" y="257" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog" timestamp="1584397527796">
+    <state x="572" y="2" key="CommitChangelistDialog2/0.0.1920.1040/1920.-26.1920.1040@0.0.1920.1040" timestamp="1601185105878" />
+    <state width="1862" height="229" key="GridCell.Tab.0.bottom" timestamp="1601251171778">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="640" y="257" key="#com.intellij.openapi.updateSettings.impl.PluginUpdateInfoDialog/0.0.1920.1040/1920.-26.1920.1040@0.0.1920.1040" timestamp="1584397527796" />
-    <state x="819" y="232" key="#xdebugger.evaluate" timestamp="1582302998086">
+    <state width="1862" height="229" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.-26.1920.1040@0.0.1920.1040" timestamp="1601251171778" />
+    <state width="1862" height="229" key="GridCell.Tab.0.center" timestamp="1601251171778">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="819" y="232" key="#xdebugger.evaluate/0.0.1920.1040/1920.-26.1920.1040@0.0.1920.1040" timestamp="1582302998086" />
-    <state width="431" height="466" key="DebuggerActiveHint" timestamp="1581276817639">
+    <state width="1862" height="229" key="GridCell.Tab.0.center/0.0.1920.1040/1920.-26.1920.1040@0.0.1920.1040" timestamp="1601251171778" />
+    <state width="1862" height="229" key="GridCell.Tab.0.left" timestamp="1601251171778">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="431" height="466" key="DebuggerActiveHint/0.0.1920.1040/1920.-26.1920.1040@0.0.1920.1040" timestamp="1581276817639" />
-    <state x="740" y="275" key="FileChooserDialogImpl" timestamp="1581108972004">
+    <state width="1862" height="229" key="GridCell.Tab.0.left/0.0.1920.1040/1920.-26.1920.1040@0.0.1920.1040" timestamp="1601251171778" />
+    <state width="1862" height="229" key="GridCell.Tab.0.right" timestamp="1601251171778">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state x="740" y="275" key="FileChooserDialogImpl/0.0.1920.1040/1920.-26.1920.1040@0.0.1920.1040" timestamp="1581108972004" />
-    <state width="1877" height="252" key="GridCell.Tab.0.bottom" timestamp="1584399048870">
+    <state width="1862" height="229" key="GridCell.Tab.0.right/0.0.1920.1040/1920.-26.1920.1040@0.0.1920.1040" timestamp="1601251171778" />
+    <state width="1877" height="293" key="GridCell.Tab.1.bottom" timestamp="1592603075180">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="252" key="GridCell.Tab.0.bottom/0.0.1920.1040/1920.-26.1920.1040@0.0.1920.1040" timestamp="1584399048870" />
-    <state width="1877" height="252" key="GridCell.Tab.0.center" timestamp="1584399048870">
+    <state width="1877" height="293" key="GridCell.Tab.1.bottom/0.0.1920.1040/1920.-26.1920.1040@0.0.1920.1040" timestamp="1592603075180" />
+    <state width="1877" height="293" key="GridCell.Tab.1.center" timestamp="1592603075180">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="252" key="GridCell.Tab.0.center/0.0.1920.1040/1920.-26.1920.1040@0.0.1920.1040" timestamp="1584399048870" />
-    <state width="1877" height="252" key="GridCell.Tab.0.left" timestamp="1584399048870">
+    <state width="1877" height="293" key="GridCell.Tab.1.center/0.0.1920.1040/1920.-26.1920.1040@0.0.1920.1040" timestamp="1592603075180" />
+    <state width="1877" height="293" key="GridCell.Tab.1.left" timestamp="1592603075180">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="252" key="GridCell.Tab.0.left/0.0.1920.1040/1920.-26.1920.1040@0.0.1920.1040" timestamp="1584399048870" />
-    <state width="1877" height="252" key="GridCell.Tab.0.right" timestamp="1584399048870">
+    <state width="1877" height="293" key="GridCell.Tab.1.left/0.0.1920.1040/1920.-26.1920.1040@0.0.1920.1040" timestamp="1592603075180" />
+    <state width="1877" height="293" key="GridCell.Tab.1.right" timestamp="1592603075180">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="252" key="GridCell.Tab.0.right/0.0.1920.1040/1920.-26.1920.1040@0.0.1920.1040" timestamp="1584399048870" />
-    <state width="1877" height="347" key="GridCell.Tab.1.bottom" timestamp="1583720122079">
+    <state width="1877" height="293" key="GridCell.Tab.1.right/0.0.1920.1040/1920.-26.1920.1040@0.0.1920.1040" timestamp="1592603075180" />
+    <state x="523" y="214" key="SettingsEditor" timestamp="1601246805318">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="347" key="GridCell.Tab.1.bottom/0.0.1920.1040/1920.-26.1920.1040@0.0.1920.1040" timestamp="1583720122079" />
-    <state width="1877" height="347" key="GridCell.Tab.1.center" timestamp="1583720122079">
+    <state x="523" y="214" key="SettingsEditor/0.0.1920.1040/1920.-26.1920.1040@0.0.1920.1040" timestamp="1601246805318" />
+    <state x="616" y="240" key="run.anything.popup" timestamp="1601250578156">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="347" key="GridCell.Tab.1.center/0.0.1920.1040/1920.-26.1920.1040@0.0.1920.1040" timestamp="1583720122079" />
-    <state width="1877" height="347" key="GridCell.Tab.1.left" timestamp="1583720122079">
+    <state x="616" y="240" key="run.anything.popup/0.0.1920.1040/1920.-26.1920.1040@0.0.1920.1040" timestamp="1601250578156" />
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1601186176351">
       <screen x="0" y="0" width="1920" height="1040" />
     </state>
-    <state width="1877" height="347" key="GridCell.Tab.1.left/0.0.1920.1040/1920.-26.1920.1040@0.0.1920.1040" timestamp="1583720122079" />
-    <state width="1877" height="347" key="GridCell.Tab.1.right" timestamp="1583720122079">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state width="1877" height="347" key="GridCell.Tab.1.right/0.0.1920.1040/1920.-26.1920.1040@0.0.1920.1040" timestamp="1583720122079" />
-    <state x="461" y="163" key="SettingsEditor" timestamp="1581109004316">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state x="461" y="163" key="SettingsEditor/0.0.1920.1040/1920.-26.1920.1040@0.0.1920.1040" timestamp="1581109004316" />
-    <state x="656" y="335" key="com.intellij.ide.util.TipDialog" timestamp="1584895965913">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state x="656" y="335" key="com.intellij.ide.util.TipDialog/0.0.1920.1040/1920.-26.1920.1040@0.0.1920.1040" timestamp="1584895965913" />
-    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup" timestamp="1578073613954">
-      <screen x="0" y="0" width="1920" height="1040" />
-    </state>
-    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040/1920.-26.1920.1040@0.0.1920.1040" timestamp="1578073613954" />
+    <state x="623" y="225" width="672" height="678" key="search.everywhere.popup/0.0.1920.1040/1920.-26.1920.1040@0.0.1920.1040" timestamp="1601186176351" />
+  </component>
+  <component name="XDebuggerManager">
+    <breakpoint-manager>
+      <breakpoints>
+        <line-breakpoint enabled="true" type="com.jetbrains.cidr.execution.debugger.OCBreakpointType">
+          <url>file://$PROJECT_DIR$/genetic_algorithm/src/genome/population.rs</url>
+          <line>222</line>
+          <option name="timeStamp" value="1" />
+        </line-breakpoint>
+      </breakpoints>
+    </breakpoint-manager>
+    <watches-manager>
+      <configuration name="CargoCommandRunConfiguration">
+        <watch expression="net_pop.list_of_individuals[0].individual.hidden[0][0].connection_weights" language="Rust" />
+      </configuration>
+    </watches-manager>
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
+    <SUITE FILE_PATH="coverage/genetic_algorithm$Test_neural_network__neural_network__neural_network_test__network_add_node_with_new_layer.info" NAME="Test neural_network::neural_network::neural_network_test::network_add_node_with_new_layer Coverage Results" MODIFIED="1601061025070" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="RsCoverageRunner" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" CONTEXT_FILE_PATH="C:\Users\goris\CLionProjects\genetic_algorithm" />
     <SUITE FILE_PATH="coverage/genetic_algorithm$Test_neural_network__neural_network__neural_network_test__network_remove_node.info" NAME="Test neural_network::neural_network::neural_network_test::network_remove_node Coverage Results" MODIFIED="1582396124076" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="RsCoverageRunner" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" CONTEXT_FILE_PATH="C:\Users\goris\CLionProjects\genetic_algorithm" />
     <SUITE FILE_PATH="coverage/genetic_algorithm$Test_delete_node_test.info" NAME="Test delete_node_test Coverage Results" MODIFIED="1582486959172" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="RsCoverageRunner" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" CONTEXT_FILE_PATH="C:\Users\goris\CLionProjects\genetic_algorithm" />
     <SUITE FILE_PATH="coverage/genetic_algorithm$Test_add_node_test.info" NAME="Test add_node_test Coverage Results" MODIFIED="1582303871280" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="RsCoverageRunner" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" CONTEXT_FILE_PATH="C:\Users\goris\CLionProjects\genetic_algorithm" />

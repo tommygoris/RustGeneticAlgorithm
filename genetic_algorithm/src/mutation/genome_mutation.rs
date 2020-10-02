@@ -1,8 +1,10 @@
 extern crate rand;
-use crate::genome::fitness_function::FitnessFunction;
-use crate::genome::population::{Individual, Population};
+
 use rand::prelude::*;
 use rand::rngs::StdRng;
+
+use crate::genome::fitness_function::FitnessFunction;
+use crate::genome::population::{Individual, Population};
 
 pub trait Mutate {
     type T;
@@ -27,10 +29,7 @@ pub struct VecIntegerMutation {
     seed: StdRng,
 }
 
-pub struct NeuralNetMutation {
-    mutation_rate: f64,
-    seed: StdRng,
-}
+pub struct NeuralNetMutation {}
 
 impl Mutate for StringMutation {
     type T = String;
@@ -125,8 +124,10 @@ mod mutation_test {
 
     #[derive(Default, Copy, Clone, Debug)]
     struct TestStringFitnessFunction;
+
     #[derive(Default, Copy, Clone, Debug)]
     struct TestVecFitnessFunction;
+
     impl FitnessFunction for TestStringFitnessFunction {
         type T = String;
 
@@ -169,7 +170,7 @@ mod mutation_test {
 
         let list_of_individuals = vec![individual, individual2];
 
-        let mut population = Population::new(list_of_individuals, ProblemType::Max);
+        let population = Population::new(list_of_individuals, ProblemType::Max);
         let new_pop = string_mutation.mutate(&population, fitness_function);
         assert_eq!(new_pop[0].retrieve_individual(), &String::from("1110000"));
         assert_eq!(
@@ -193,7 +194,7 @@ mod mutation_test {
 
         let list_of_individuals = vec![individual, individual2];
 
-        let mut population = Population::new(list_of_individuals, ProblemType::Max);
+        let population = Population::new(list_of_individuals, ProblemType::Max);
         let new_pop = vec_int_mutation.mutate(&population, fitness_function);
 
         assert_eq!(new_pop[0].retrieve_individual(), &vec![3, 3, 3, 2, 2]);

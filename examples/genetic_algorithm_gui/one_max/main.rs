@@ -11,7 +11,7 @@ mod problem_settings;
 
 use log::{info, warn, LevelFilter};
 
-use glib::GString;
+use glib::{GString, ObjectExt};
 use gtk::Orientation::{Horizontal, Vertical};
 use gtk::{
     BoxExt, Button, ButtonExt, CellLayoutExt, ComboBoxExt, ComboBoxTextExt, Container,
@@ -26,7 +26,6 @@ use crate::gtk::ScrollableExt;
 use crate::gtk::StaticType;
 use crate::gtk::TextTagTableExt;
 use crate::gtk::TextViewExt;
-use crate::one_max::one_max::OneMax;
 use crate::problem_settings::ProblemSettings;
 use crossbeam_utils::thread::scope;
 use genetic_algorithm::crossover::genome_crossover::{Crossover, StringCrossover};
@@ -35,10 +34,8 @@ use genetic_algorithm::genome::population::{Individual, Population, ProblemType}
 use genetic_algorithm::mutation::genome_mutation::StringMutation;
 use genetic_algorithm::selection::genome_selection::{SelectIndividual, TournamentSelection};
 use gio::SocketConnectableExt;
-use plotters::prelude::*;
 use rand::prelude::*;
 use rand::Rng;
-use relm::{Channel, EventStream, Relm, Update, Widget, WidgetTest};
 use sha2::{Digest, Sha256};
 use std::borrow::{Borrow, BorrowMut};
 use std::convert::{TryFrom, TryInto};
@@ -49,6 +46,8 @@ use std::sync::{Arc, Condvar, Mutex};
 use std::thread;
 #[cfg(debug_assertions)]
 use std::time::Duration;
+use crate::one_max::OneMax;
+use relm::{EventStream, Channel};
 
 const DEFAULT_POPULATION: u64 = 1;
 const DEFAULT_CROSSOVER_RATE: f64 = 0.80;
@@ -595,7 +594,7 @@ fn main() {
                 let mut mutation =
                     StringMutation::new(model.mutation_rate, vec!['0', '1'], model.seed);
 
-                let mut one_max = one_max::one_max::OneMax::new(
+                let mut one_max = OneMax::new(
                     0,
                     false,
                     Box::new(crossover),
@@ -682,35 +681,6 @@ fn main() {
         update(msg, &mut model, &widgets);
     });
     gtk::main();
-}
-
-fn create_chart() -> Result<(), Box<dyn std::error::Error>> {
-    let root = BitMapBackend::new("0.png", (640, 480)).into_drawing_area();
-    root.fill(&White)?;
-    let mut chart = ChartBuilder::on(&root)
-        .caption("y=x^2", ("Arial", 50).into_font())
-        .margin(5)
-        .x_label_area_size(30)
-        .y_label_area_size(30)
-        .build_ranged(-1f32..1f32, -0.1f32..1f32)?;
-
-    chart.configure_mesh().draw()?;
-
-    chart
-        .draw_series(LineSeries::new(
-            (-50..=50).map(|x| x as f32 / 50.0).map(|x| (x, x * x)),
-            &Red,
-        ))?
-        .label("y = x^2")
-        .legend(|(x, y)| Path::new(vec![(x, y), (x + 20, y)], &Red));
-
-    chart
-        .configure_series_labels()
-        .background_style(&White.mix(0.8))
-        .border_style(&Black)
-        .draw()?;
-
-    Ok(())
 }
 
 fn create_hash(text: &str) -> String {

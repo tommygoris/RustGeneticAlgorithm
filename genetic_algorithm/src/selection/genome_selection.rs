@@ -1,10 +1,10 @@
 use crate::genome::population::{Individual, Population, ProblemType};
 use rand::prelude::*;
 use rand::rngs::StdRng;
+use serde::{Deserialize, Serialize};
 
-pub trait SelectIndividual {
-    type T;
-    fn select_individual(&mut self, population: &Population<Self::T>) -> Individual<Self::T>;
+pub trait SelectIndividual<T> {
+    fn select_individual(&mut self, population: &Population<T>) -> Individual<T>;
 }
 #[derive(Clone, Debug)]
 pub struct TournamentSelection {
@@ -13,9 +13,8 @@ pub struct TournamentSelection {
     seed: StdRng,
 }
 // TODO Figure out if we want to remove chosen individuals from the population if they have already been selected. Mostly Critical when populations are extremely small.
-impl SelectIndividual for TournamentSelection {
-    type T = String;
-    fn select_individual(&mut self, population: &Population<String>) -> Individual<String> {
+impl<T: Clone + Serialize + Deserialize> SelectIndividual<T> for TournamentSelection {
+    fn select_individual(&mut self, population: &Population<T>) -> Individual<T> {
         let population_amount = population.list_of_individuals().len();
 
         let location = self.seed.gen_range(0, population_amount);
@@ -58,6 +57,13 @@ impl SelectIndividual for TournamentSelection {
     }
 }
 
+// impl SelectIndividual for TournamentSelection {
+//     type T = NeuralNetwork;
+//     fn select_individual(&mut self, population: &Population<String>) -> Individual<NeuralNetwork> {
+//         self.select::<Self::T>(&population)
+//     }
+// }
+
 impl TournamentSelection {
     pub fn new(
         k_value: u32,
@@ -89,7 +95,7 @@ mod selection_test {
 
         let list_of_individuals = vec![individual, individual2];
 
-        let mut population = Population::new(list_of_individuals, ProblemType::Max);
+        let population = Population::new(list_of_individuals, ProblemType::Max);
 
         let mut tournament_selection = TournamentSelection::new(2, 1.0, *seed);
 
@@ -105,7 +111,7 @@ mod selection_test {
         let individual2 = Individual::new(String::from("11111"), 5.0);
         let list_of_individuals = vec![individual, individual2];
 
-        let mut population = Population::new(list_of_individuals, ProblemType::Min);
+        let population = Population::new(list_of_individuals, ProblemType::Min);
         let mut tournament_selection = TournamentSelection::new(2, 1.0, *seed);
         let individual3 = tournament_selection.select_individual(&population);
         assert_eq!(individual3.retrieve_individual(), &String::from("11111"));

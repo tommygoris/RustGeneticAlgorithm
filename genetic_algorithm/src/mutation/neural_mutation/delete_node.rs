@@ -4,6 +4,7 @@ use crate::mutation::genome_mutation::Mutate;
 use crate::neural_network::neural_network::NeuralNetwork;
 use rand::rngs::StdRng;
 use rand::{Rng, SeedableRng};
+use serde::{Deserialize, Serialize};
 
 pub struct DeleteNode {
     delete_node_mutation_rate: f64,
@@ -11,7 +12,7 @@ pub struct DeleteNode {
 }
 
 impl DeleteNode {
-    fn new(delete_node_mutation_rate: f64, seed: [u8; 32]) -> DeleteNode {
+    pub fn new(delete_node_mutation_rate: f64, seed: [u8; 32]) -> DeleteNode {
         DeleteNode {
             delete_node_mutation_rate,
             seed: SeedableRng::from_seed(seed),
@@ -27,7 +28,7 @@ impl Mutate for DeleteNode {
         population: &Population<NeuralNetwork>,
         mut fitness_function: Box<dyn FitnessFunction<T = NeuralNetwork>>,
     ) -> Vec<Individual<NeuralNetwork>> {
-        let mut new_population = Vec::new();
+        let mut new_population: Vec<Individual<NeuralNetwork>> = Vec::new();
 
         for individual in population.list_of_individuals().iter() {
             let gen_number = self.seed.gen::<f64>();
@@ -36,6 +37,11 @@ impl Mutate for DeleteNode {
                 continue;
             }
             let mut mutated_neural_net = individual.retrieve_individual().clone();
+
+            if mutated_neural_net.is_hidden_layer_empty() {
+                new_population.push(individual.clone());
+                continue;
+            }
             let node_index = self.seed.gen_range(0, mutated_neural_net.hidden_length());
             mutated_neural_net.remove_hidden_node(node_index);
             let new_fitness = fitness_function.calculate_fitness(&mutated_neural_net);
@@ -64,7 +70,7 @@ mod delete_node_test {
     impl FitnessFunction for TestNeuralNetworkFitnessFunction {
         type T = NeuralNetwork;
 
-        fn calculate_fitness(&mut self, individual: &NeuralNetwork) -> f64 {
+        fn calculate_fitness(&mut self, _: &NeuralNetwork) -> f64 {
             1.0
         }
     }
@@ -89,6 +95,17 @@ mod delete_node_test {
         let mut delete_node = DeleteNode::new(1.0, *DEFAULT_SEED);
         new_pop.mutate(&mut delete_node, fitness_function.clone());
 
+        let net = new_pop.list_of_individuals()[0].retrieve_individual();
+        assert_eq!(net.is_hidden_layer_empty(), true);
+
+        let net = NeuralNetwork::new(1, &[], data, *DEFAULT_SEED);
+        assert_eq!(net.is_hidden_layer_empty(), true);
+
+        let new_indv = Individual::new(net, 1.0);
+        let mut new_pop = Population::new(vec![new_indv], ProblemType::Max);
+        let mut delete_node = DeleteNode::new(1.0, *DEFAULT_SEED);
+
+        new_pop.mutate(&mut delete_node, fitness_function.clone());
         let net = new_pop.list_of_individuals()[0].retrieve_individual();
         assert_eq!(net.is_hidden_layer_empty(), true);
     }

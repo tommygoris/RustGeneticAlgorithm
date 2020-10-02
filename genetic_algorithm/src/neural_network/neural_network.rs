@@ -1,31 +1,31 @@
-use nalgebra::DMatrix;
-use rand::rngs::StdRng;
+use rand::prelude::ThreadRng;
 use rand::{Rng, SeedableRng};
-use std::borrow::{Borrow, BorrowMut};
+use rand_chacha::ChaChaRng;
+use serde::{Deserialize, Serialize};
+use std::borrow::Borrow;
 use std::cmp;
 use std::convert::TryFrom;
 
 const BIAS_VALUE: f64 = 1.0;
+const MIN_NEGATIVE_VALUE: f64 = -0.1;
+const MAX_POSITIVE_VALUE: f64 = 0.1;
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 pub struct NeuralNetwork {
     inputs: Vec<NeuralNode>,
     hidden: Vec<Vec<NeuralNode>>,
     outputs: Vec<NeuralNode>,
     bias: Vec<Vec<NeuralNode>>,
-    seed: StdRng,
+    seed: ChaChaRng,
 }
 
-#[derive(Clone, Debug)]
+#[derive(Clone, Debug, Serialize, Deserialize)]
 struct NeuralNode {
     connection_weights: Vec<f64>,
 }
 impl NeuralNode {
     pub fn new(connection_weights: Vec<f64>) -> NeuralNode {
         NeuralNode { connection_weights }
-    }
-    pub fn retrieve_connection_weights(&self) -> &Vec<f64> {
-        &self.connection_weights
     }
 }
 
@@ -221,11 +221,9 @@ impl NeuralNetwork {
 
     // Will delete hidden node layer if the current hidden node layer has 1 node.
     pub fn remove_hidden_node(&mut self, layer_index: usize) {
-        let mut deleted_layer = false;
         if !self.is_hidden_layer_empty() && self.hidden[layer_index].len() == 1 {
             self.hidden.remove(layer_index);
             self.bias.remove(layer_index);
-            deleted_layer = true;
         } else {
             let last_element_index = self.hidden[layer_index].len() - 1;
             self.hidden[layer_index].remove(last_element_index);
@@ -276,9 +274,7 @@ impl NeuralNetwork {
         self.bias.push(new_bias_layer);
     }
     pub fn new(num_inputs: u32, hidden: &[u32], num_outputs: u32, seed: [u8; 32]) -> NeuralNetwork {
-        let mut rng: StdRng = SeedableRng::from_seed(seed);
-
-        let mut input_layer = Vec::new();
+        let mut rng: ChaChaRng = SeedableRng::from_seed(seed);
 
         // Get the number of connections the input layer has to connect to. If we have a hidden layer defined, connect inputs to first layer of hidden.
         // else connect inputs to outputs.
@@ -288,13 +284,7 @@ impl NeuralNetwork {
             u32::try_from(num_outputs).unwrap()
         };
 
-        for _ in 0..num_inputs {
-            let mut weights = Vec::new();
-            for _ in 0..num_input_connections {
-                weights.push(rng.gen::<f64>())
-            }
-            input_layer.push(NeuralNode::new(weights));
-        }
+        let input_layer = NeuralNetwork::create_inputs(num_inputs, num_input_connections, &mut rng);
 
         let mut hidden_layer: Vec<Vec<NeuralNode>> = Vec::new();
         if !hidden.is_empty() {
@@ -303,7 +293,7 @@ impl NeuralNetwork {
                 for _ in 0..hidden[current_layer] {
                     let mut weights = Vec::new();
                     for _ in 0..hidden[current_layer + 1] {
-                        weights.push(rng.gen::<f64>())
+                        weights.push(rng.gen_range(MIN_NEGATIVE_VALUE, MAX_POSITIVE_VALUE))
                     }
                     inter_hidden_layer.push(NeuralNode::new(weights))
                 }
@@ -313,7 +303,7 @@ impl NeuralNetwork {
             for _ in 0..hidden[hidden.len() - 1] {
                 let mut weights = Vec::new();
                 for _ in 0..num_outputs {
-                    weights.push(rng.gen::<f64>())
+                    weights.push(rng.gen_range(MIN_NEGATIVE_VALUE, MAX_POSITIVE_VALUE))
                 }
                 inter_hidden_layer.push(NeuralNode::new(weights));
             }
@@ -329,10 +319,11 @@ impl NeuralNetwork {
         for current_layer in 0..hidden.len() {
             let mut inter_bias_layer = Vec::new();
             // Create 1 bias node per hidden layer
+            // TODO: Add bias to output layer
             for _ in 0..1 {
                 let mut weights = Vec::new();
                 for _ in 0..hidden[current_layer] {
-                    weights.push(rng.gen::<f64>())
+                    weights.push(rng.gen_range(MIN_NEGATIVE_VALUE, MAX_POSITIVE_VALUE))
                 }
                 inter_bias_layer.push(NeuralNode::new(weights));
             }
@@ -347,6 +338,42 @@ impl NeuralNetwork {
             seed: rng,
         }
     }
+
+    fn create_inputs(
+        num_inputs: u32,
+        num_input_connections: u32,
+        rng: &mut ChaChaRng,
+    ) -> Vec<NeuralNode> {
+        let mut input_layer = Vec::new();
+        for _ in 0..num_inputs {
+            let mut weights = Vec::new();
+            for _ in 0..num_input_connections {
+                weights.push(rng.gen_range(MIN_NEGATIVE_VALUE, MAX_POSITIVE_VALUE))
+            }
+            input_layer.push(NeuralNode::new(weights));
+        }
+        input_layer
+    }
+
+    pub fn feedforward_new_inputs(&mut self, inputs: &[f64]) -> Vec<f64> {
+        // Get the number of connections the input layer has to connect to. If we have a hidden layer defined, connect inputs to first layer of hidden.
+        // else connect inputs to outputs.
+        let num_input_connections = if !self.hidden.is_empty() {
+            self.hidden[0].len() as u32
+        } else {
+            u32::try_from(self.outputs.len()).unwrap()
+        };
+
+        let new_inputs_nodes = NeuralNetwork::create_inputs(
+            inputs.len() as u32,
+            num_input_connections as u32,
+            &mut self.seed,
+        );
+
+        self.inputs = new_inputs_nodes;
+        self.feedforward(inputs)
+    }
+
     pub fn feedforward(&self, inputs: &[f64]) -> Vec<f64> {
         let mut layer_output: Vec<f64> = vec![0.0; self.inputs[0].connection_weights.len()];
         for (input_index, input_node) in self.inputs.iter().enumerate() {
@@ -376,73 +403,23 @@ impl NeuralNetwork {
                 }
                 layer_output = next_layer_output;
             }
-            //            for bias_node in self.bias[index].iter() {
-            //                for (index, weights) in bias_node.connection_weights.iter().enumerate() {
-            //                    layer_output[index] += weights * bias_node.node_val;
-            //                }
-            //            }
+        } else {
+            // TODO: Add bias layer to output
         }
         for index in 0..layer_output.len() {
             layer_output[index] = sigmoid(layer_output[index].borrow());
         }
         layer_output.to_vec()
     }
-
-    //    fn calculate_layer() -> Vec<f64> {}
-    //    pub fn feedforward(&mut self, inputs: &[f64]) -> Vec<f64> {
-    //        let dm1 = DMatrix::from_vec(
-    //            4,
-    //            3,
-    //            vec![1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0, 0.0, 0.0, 0.0, 1.0, 0.0],
-    //        );
-    //        let mut input_vec: Vec<f64> = Vec::new();
-    //        for node in self.inputs.iter_mut() {
-    //            input_vec.append(&mut node.connection_weights);
-    //        }
-    //
-    //        let next_layer_len = if !self.hidden.is_empty() {
-    //            self.hidden[0].len()
-    //        } else {
-    //            self.outputs.len()
-    //        };
-    //        // rows, cols
-    //        let input_weight_matrix = DMatrix::from_vec(self.inputs.len(), next_layer_len, input_vec);
-    //        // assume 1 row of training data for now
-    //        let input_data_matrix = DMatrix::from_vec(1, self.inputs.len(), inputs.to_vec());
-    //        //println!("{:?}", input_weight_matrix);
-    //        // Matrix multiply input data with input layer weights
-    //        let mut output_matrix = (input_weight_matrix * input_data_matrix);
-    //
-    //        if !self.hidden.is_empty() {
-    //            let input_bias_matrix = DMatrix::from_vec(next_layer_len, self.);
-    //            for hidden_layer in self.hidden.iter_mut() {
-    //                let mut hidden_layer_data = Vec::new();
-    //                for node in hidden_layer.into_iter() {
-    //                    hidden_layer_data.append(&mut node.connection_weights);
-    //                }
-    //                let hidden_layer_matrix = DMatrix::from_vec(
-    //                    hidden_layer.len(),
-    //                    hidden_layer[0].connection_weights.len(),
-    //                    hidden_layer_data,
-    //                );
-    //                output_matrix = hidden_layer_matrix * output_matrix;
-    //            }
-    //        }
-    //        let mut output_vec = Vec::new();
-    //        for val in output_matrix.into_iter() {
-    //            output_vec.push(val.clone());
-    //        }
-    //        output_vec
-    //    }
 }
 
 impl std::fmt::Display for NeuralNetwork {
     fn fmt(&self, f: &mut std::fmt::Formatter) -> std::fmt::Result {
-        write!(f, "Input Layer: {:#?}", self.inputs);
-        write!(f, "Hidden Layer: {:#?}", self.hidden);
-        write!(f, "Output Layer: {:#?}", self.outputs);
-        write!(f, "Bias Layer: {:#?}", self.bias);
-        write!(f, "Seed: {:#?}", self.seed)
+        writeln!(f, "Input Layer: {:#?}", self.inputs).unwrap();
+        writeln!(f, "Hidden Layer: {:#?}", self.hidden).unwrap();
+        writeln!(f, "Output Layer: {:#?}", self.outputs).unwrap();
+        writeln!(f, "Bias Layer: {:#?}", self.bias).unwrap();
+        writeln!(f, "Seed: {:#?}", self.seed)
     }
 }
 
@@ -459,7 +436,7 @@ fn sigmoid(a: &f64) -> f64 {
 #[cfg(test)]
 mod neural_network_test {
     use crate::neural_network::neural_network::NeuralNetwork;
-    use std::borrow::{Borrow, BorrowMut};
+    use std::borrow::Borrow;
     const DEFAULT_SEED: &[u8; 32] = &[
         1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 3, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2, 3, 4, 1, 2,
         3, 4,
@@ -517,13 +494,14 @@ mod neural_network_test {
     fn network_feedforward_test() {
         let xs: [u32; 1] = [1];
         let data = 1;
-        let mut net = NeuralNetwork::new(1, xs.as_ref(), data, *DEFAULT_SEED);
+        let net = NeuralNetwork::new(1, xs.as_ref(), data, *DEFAULT_SEED);
         let inputs = [1.0];
 
         let mut output = net.feedforward(inputs.as_ref());
 
         output = net.feedforward(inputs.as_ref());
-        assert_eq!(output[0], 0.6126923921759762);
+        assert_eq!(output.len(), 1);
+        assert_eq!(output[0], 0.5032105036547196);
 
         let xs: [u32; 5] = [10, 10, 10, 10, 10];
         let data = 1;
@@ -533,7 +511,8 @@ mod neural_network_test {
         let mut output = net.feedforward(inputs.as_ref());
 
         output = net.feedforward(inputs.as_ref());
-        assert_eq!(output[0], 0.9970523923651378);
+        assert_eq!(output.len(), 1);
+        assert_eq!(output[0], 0.5215843362050597);
     }
 
     #[test]
@@ -895,7 +874,7 @@ mod neural_network_test {
         let mut net_one = NeuralNetwork::new(10, xs.as_ref(), data, *DEFAULT_SEED);
         let xs: [u32; 2] = [8, 8];
         let data = 5;
-        let mut net_two = NeuralNetwork::new(8, xs.as_ref(), data, *DEFAULT_SEED);
+        let net_two = NeuralNetwork::new(8, xs.as_ref(), data, *DEFAULT_SEED);
 
         let net_three = net_one.hidden_layer_swap_and_create_new_from(net_two.borrow());
 

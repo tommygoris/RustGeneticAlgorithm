@@ -6,7 +6,6 @@ use rand::prelude::*;
 use rand::rngs::StdRng;
 use std::collections::HashSet;
 use std::convert::TryFrom;
-use std::ops::Deref;
 use std::string::ToString;
 
 pub trait Crossover {
